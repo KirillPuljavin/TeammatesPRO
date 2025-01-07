@@ -1,10 +1,10 @@
 import "./App.scss";
 
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
-import Main from "./routes/Main";
+import Main from "../../next/src/app/routes/Main";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../../next/src/app/components/Header";
+import Footer from "../../next/src/app/components/Footer";
 
 /* eslint-disable react/prop-types */
 const Container = ({ children }) => {
