@@ -1,13 +1,30 @@
 import db from "@/lib/db";
 
+// GET: Fetch all users
 export async function GET(req) {
   try {
-    const stmt = db.prepare("SELECT * FROM users");
-    const users = stmt.all(); // Fetch all rows
-
-    return Response.json(users, { status: 200 });
+    const result = await db.execute("SELECT * FROM users");
+    return Response.json(result.rows, { status: 200 });
   } catch (error) {
     console.error(error);
-    return Response.json({ error: "Failed to fetch data" }, { status: 500 });
+    return Response.json({ error: "Failed to fetch users" }, { status: 500 });
+  }
+}
+
+// POST: Add a new user
+export async function POST(req) {
+  try {
+    const body = await req.json();
+    const { name, email } = body;
+
+    await db.execute({
+      sql: "INSERT INTO users (name, email) VALUES (?, ?)",
+      args: [name, email],
+    });
+
+    return Response.json({ message: "User added" }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ error: "Failed to add user" }, { status: 500 });
   }
 }
