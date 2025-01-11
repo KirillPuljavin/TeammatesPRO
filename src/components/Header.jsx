@@ -1,28 +1,19 @@
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-
-const Header = () => {
+export default function Header() {
   return (
-    <div id="header">
-      <h1 />
-
-      <div id="navMenu">
-        <button onClick={() => navigate("/")}>
-          <h3>Om Mig</h3>
-        </button>
-        <button onClick={() => navigate("/details")}>
-          <h3>Kunskaper</h3>
-        </button>
-        <button onClick={() => navigate("/interns")}>
-          <h3>Praktik</h3>
-        </button>
-        <button onClick={() => navigate("/publicWorks")}>
-          <h3>Publika Projekt</h3>
-        </button>
-      </div>
-      <hr />
+    <div className="header">
+      <nav>
+        <ul>
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/about">About</a>
+          </li>
+          <li>
+            <a href="/contact">Contact</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   );
-};
-
-export default Header;
+}

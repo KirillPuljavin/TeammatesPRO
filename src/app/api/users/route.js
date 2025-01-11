@@ -11,20 +11,15 @@ export async function GET(req) {
   }
 }
 
-// POST: Add a new user
-export async function POST(req) {
-  try {
-    const body = await req.json();
-    const { name, email } = body;
-
-    await db.execute({
-      sql: "INSERT INTO users (name, email) VALUES (?, ?)",
-      args: [name, email],
-    });
-
-    return Response.json({ message: "User added" }, { status: 201 });
-  } catch (error) {
-    console.error(error);
-    return Response.json({ error: "Failed to add user" }, { status: 500 });
-  }
-}
+/* 
+useEffect(() => {
+    // Fetch data from API
+    fetch("/api/users", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => setUsers(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+  
+  */
