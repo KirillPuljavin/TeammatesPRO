@@ -38,7 +38,7 @@ export default function LoginPage() {
         });
 
         if (response.ok) {
-          router.push("/classes"); // Replace with actual teacher route
+          router.push("/pages/classes");
         } else {
           const data = await response.json();
           if (data.message) {
