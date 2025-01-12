@@ -11,7 +11,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleStudentClick = () => {
-    router.push("/student-dashboard"); // Replace with actual student route
+    router.push("/pages/classes");
   };
 
   const handleTeacherSubmit = async (e) => {
@@ -31,7 +31,7 @@ export default function LoginPage() {
 
     if (valid) {
       try {
-        const response = await fetch("/api/auth/teacher-login", {
+        const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, password }),

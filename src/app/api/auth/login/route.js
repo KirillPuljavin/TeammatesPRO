@@ -1,25 +1,58 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-// Mock user data (replace with your database lookup)
-const mockUser = {
-  username: "testuser",
-  passwordHash: bcrypt.hashSync("testpassword", 10), // Store securely
-};
+import db from "@/lib/db"; // Using the Turso database client
 
 export async function POST(req) {
-  const { username, password } = await req.json();
+  const { name, password } = await req.json();
 
-  // Validate user credentials
-  if (
-    username === mockUser.username &&
-    bcrypt.compareSync(password, mockUser.passwordHash)
-  ) {
+  try {
+    console.log("Received login request for name:", name);
+
+    // Fetch teacher from the database
+    const query = "SELECT * FROM teachers WHERE name = ?";
+    const { rows } = await db.execute(query, [name]);
+
+    // Check if teacher exists
+    if (rows.length === 0) {
+      console.error("Teacher not found:", name);
+      return NextResponse.json(
+        { success: false, message: "Teacher not found." },
+        { status: 401 }
+      );
+    }
+
+    const teacher = rows[0]; // Get the first teacher row
+    console.log("Found teacher:", teacher);
+
+    // Compare hashed password
+    console.log("Comparing password: ", password);
+    const isPasswordCorrect = bcrypt.compareSync(password, teacher.password);
+    console.log(
+      "Password comparison result:",
+      password,
+      ", ",
+      isPasswordCorrect
+    );
+
+    if (!isPasswordCorrect) {
+      console.error("Invalid password for teacher:", name);
+      return NextResponse.json(
+        { success: false, message: "Invalid password." },
+        { status: 401 }
+      );
+    }
+
     // Create a JWT token
-    const token = jwt.sign({ username }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: teacher.id, name: teacher.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    console.log("Generated JWT token for teacher:", name);
 
     // Set a secure cookie
     const response = NextResponse.json({ success: true });
@@ -29,11 +62,14 @@ export async function POST(req) {
       sameSite: "strict",
       maxAge: 3600,
     });
-    return response;
-  }
 
-  return NextResponse.json(
-    { success: false, message: "Invalid credentials" },
-    { status: 401 }
-  );
+    console.log("Login successful for teacher:", name);
+    return response;
+  } catch (error) {
+    console.error("Error during login:", error.message);
+    return NextResponse.json(
+      { success: false, message: "An error occurred. Please try again." },
+      { status: 500 }
+    );
+  }
 }

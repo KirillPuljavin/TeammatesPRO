@@ -19,5 +19,5 @@ export function middleware(req) {
 
 // Apply middleware to protected routes
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*"], // Add protected paths here
+  matcher: ["/pages:path*"],
 };
