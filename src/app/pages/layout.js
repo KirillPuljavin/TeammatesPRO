@@ -1,0 +1,21 @@
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+import { redirect } from "next/navigation";
+
+export default function ProtectedLayout({ children }) {
+  const cookieStore = cookies();
+  const token = cookieStore.get("auth-token")?.value;
+
+  if (!token) {
+    redirect("/"); // Redirect to login if no token
+  }
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+  } catch (error) {
+    console.error("JWT verification failed:", error.message);
+    redirect("/"); // Redirect if token is invalid
+  }
+
+  return <>{children}</>; // Render the protected pages
+}

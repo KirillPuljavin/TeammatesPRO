@@ -1,12 +1,23 @@
 import { NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(req) {
   try {
+    const token = req.cookies.get("auth-token"); // Check if the cookie exists
+
+    if (!token) {
+      return NextResponse.json({
+        success: false,
+        message: "Already logged out",
+      });
+    }
+
     const response = NextResponse.json({
       success: true,
       message: "Logout successful",
     });
-    response.cookies.set("auth-token", "", { maxAge: -1 }); // Clear the cookie
+
+    // Clear the cookie
+    response.cookies.set("auth-token", "", { maxAge: -1 });
     return response;
   } catch (error) {
     return NextResponse.json(

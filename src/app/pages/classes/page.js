@@ -1,5 +1,3 @@
-"use client";
-
 export default function ClassesPage() {
   const classes = [
     { id: 1, name: "Class A", students: 25 },
