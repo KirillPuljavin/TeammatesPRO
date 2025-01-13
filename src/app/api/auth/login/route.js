@@ -26,12 +26,11 @@ export async function POST(req) {
     console.log("Found teacher:", teacher);
 
     // Compare hashed password
-    console.log("Comparing password: ", password);
     const isPasswordCorrect = bcrypt.compareSync(password, teacher.password);
     console.log(
       "Password comparison result:",
       password,
-      ", ",
+      ", match: ",
       isPasswordCorrect
     );
 
