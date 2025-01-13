@@ -8,6 +8,7 @@ const Footer = () => {
       if (res.ok) {
         const data = await res.json();
         console.log("Logout successful:", data);
+        window.location.reload();
       } else {
         const errorData = await res.json();
         console.error("Logout failed:", errorData.message || "Unknown error");
