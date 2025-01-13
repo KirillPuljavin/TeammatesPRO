@@ -22,8 +22,8 @@
     "sass": "^1.83.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "eslint": "^9",
+    "@eslint/eslintrc": "^3.2.0",
+    "eslint": "^9.18.0",
     "eslint-config-next": "15.1.3"
   }
 }
