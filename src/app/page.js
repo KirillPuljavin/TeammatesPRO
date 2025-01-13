@@ -51,6 +51,7 @@ export default function LoginPage() {
         setErrors((prev) => ({
           ...prev,
           general: "An error occurred. Please try again.",
+          error,
         }));
       }
     }
