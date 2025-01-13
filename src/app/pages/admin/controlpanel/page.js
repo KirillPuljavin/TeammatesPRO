@@ -1,3 +1,7 @@
 export default function ControlPanel() {
-  return <></>;
+  return (
+    <>
+      <h2>Control Panel</h2>
+    </>
+  );
 }

@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import db from "@/lib/db"; // Using the Turso database client
+import db from "@/lib/db";
 
 export async function POST(req) {
   const { name, password } = await req.json();
 
   try {
     console.log("Received login request for name:", name);
-
-    // Fetch teacher from the database
     const query = "SELECT * FROM teachers WHERE name = ?";
     const { rows } = await db.execute(query, [name]);
 
@@ -21,8 +19,7 @@ export async function POST(req) {
         { status: 401 }
       );
     }
-
-    const teacher = rows[0]; // Get the first teacher row
+    const teacher = rows[0];
     console.log("Found teacher:", teacher);
 
     // Compare hashed password

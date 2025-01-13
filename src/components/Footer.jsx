@@ -2,13 +2,18 @@
 
 const Footer = () => {
   const handleLogout = async () => {
-    console.log("Token in middleware:", req.cookies.get("auth-token"));
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
 
-    const res = await fetch("/api/logout", { method: "POST" });
-    if (res.ok) {
-      window.location.href = "/"; // Redirect to main page
-    } else {
-      console.error("Logout failed");
+      if (res.ok) {
+        const data = await res.json();
+        console.log("Logout successful:", data);
+      } else {
+        const errorData = await res.json();
+        console.error("Logout failed:", errorData.message || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error.message);
     }
   };
 
