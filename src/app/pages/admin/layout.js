@@ -2,8 +2,8 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 
-export default function AdminLayout({ children }) {
-  const cookieStore = cookies();
+export default async function AdminLayout({ children }) {
+  const cookieStore = await cookies();
   const token = cookieStore.get("auth-token")?.value;
 
   if (!token) {
