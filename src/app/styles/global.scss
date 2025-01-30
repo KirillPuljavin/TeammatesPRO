@@ -1,17 +1,22 @@
+// ====================
+// Global Variables
+// ====================
 :root {
-  --background: #f8f9fc; /* Soft white */
-  --foreground: #2c2c2c; /* Darker gray for text */
-  --primary: #5a67d8; /* Corporate blue */
-  --primary-light: #7b8cfc; /* Lighter blue for hover */
-  --secondary: #ed64a6; /* Subtle pink */
-  --neutral: #9a9a9a; /* Neutral gray for text */
-  --neutral-border: #e2e8f0; /* Light gray for input borders */
-  --shadow: rgba(0, 0, 0, 0.05); /* Subtle shadow */
-  --shadow-hover: rgba(0, 0, 0, 0.1); /* Slightly stronger shadow for hover */
+  --background: #f8f9fc;
+  --foreground: #2c2c2c;
+  --primary: #5a67d8;
+  --primary-light: #7b8cfc;
+  --secondary: #ed64a6;
+  --neutral: #9a9a9a;
+  --neutral-border: #e2e8f0;
+  --shadow: rgba(0, 0, 0, 0.05);
+  --shadow-hover: rgba(0, 0, 0, 0.1);
   --transition: all 0.2s ease-in-out;
 }
 
-/* Base Styles */
+// ====================
+// Base Styles
+// ====================
 html,
 body {
   font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
@@ -29,7 +34,9 @@ body {
   box-sizing: border-box;
 }
 
-/* Center Layout */
+// ====================
+// Utility Classes
+// ====================
 .flex-center {
   display: flex;
   flex-direction: column;
@@ -38,7 +45,9 @@ body {
   width: 100%;
 }
 
-/* Title and Description */
+// ====================
+// Typography
+// ====================
 h1 {
   font-size: 2.4rem;
   margin-bottom: 8px;
@@ -49,13 +58,44 @@ p {
   font-size: 1rem;
   color: var(--neutral);
   margin-bottom: 24px;
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
   width: 100%;
   max-width: 700px;
   line-height: 1.5;
 }
 
-/* Buttons */
+// ====================
+// Form Elements
+// ====================
+.input {
+  width: 260px;
+  height: 44px;
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid var(--neutral-border);
+  border-radius: 6px;
+  margin: 15px 5px;
+  transition: var(--transition);
+
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 6px var(--primary-light);
+    outline: none;
+  }
+}
+
+.error {
+  font-size: 13px;
+  color: var(--secondary);
+  margin-top: -15px;
+  margin-bottom: 8px;
+}
+
+// ====================
+// Buttons
+// ====================
 .button {
   width: 260px;
   height: 44px;
@@ -82,7 +122,24 @@ p {
       background: #f08dbb;
     }
   }
+
+  &.compact {
+    width: auto;
+    padding: 0 1rem;
+    height: 36px;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  &.danger {
+    background: var(--secondary);
+
+    &:hover {
+      background: #e74c3c;
+    }
+  }
 }
+
 .button-group {
   display: flex;
   justify-content: center;
@@ -90,67 +147,109 @@ p {
   margin-top: 12px;
 }
 
-/* Input Fields */
-.input {
-  width: 260px;
-  height: 44px;
-  padding: 10px;
-  font-size: 15px;
-  border: 1px solid var(--neutral-border);
-  border-radius: 6px;
-  margin: 12px 0;
-  transition: var(--transition);
-
-  &:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 6px var(--primary-light);
-    outline: none;
-  }
-}
-
-/* Error Message */
-.error {
-  font-size: 13px;
-  color: var(--secondary);
-  margin-top: -20px;
-  margin-bottom: 8px;
-}
-
-/* Forms */
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-/* Footer */
-.footer {
-  font-size: 0.9rem;
-  color: var(--neutral);
-  margin-top: 20px;
-  text-align: center;
-  width: 100%;
-  position: fixed;
-  bottom: 16px;
-}
-
-/// CONTROL PANEL
-.control-panel {
+// ====================
+// Management Components
+// ====================
+.management-container {
   width: 100%;
   max-width: 900px;
-  background: #ffffff;
-  box-shadow: 0px 4px 12px var(--shadow-hover);
+  background: #fff;
+  box-shadow: 0 4px 12px var(--shadow-hover);
   border-radius: 12px;
   padding: 24px;
   margin: 32px 0;
+
+  .management-header {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+}
+
+// ====================
+// List Components
+// ====================
+.data-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 24px;
+
+  .data-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--background);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px var(--shadow);
+    transition: var(--transition);
+
+    &:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px var(--shadow-hover);
+    }
+
+    .item-content {
+      flex: 1;
+      margin-right: 16px;
+    }
+
+    .item-actions {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}
+
+// ====================
+// Form Components
+// ====================
+.management-form {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--neutral-border);
+
+  .form-input {
+    flex: 1;
+    max-width: 400px;
+  }
+}
+
+// ====================
+// Status Indicators
+// ====================
+.status-message {
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  margin: 1rem 0;
+
+  &.loading {
+    background: rgba(var(--primary), 0.1);
+    color: var(--primary);
+  }
+
+  &.error {
+    background: rgba(var(--secondary), 0.1);
+    color: var(--secondary);
+  }
+}
+
+// ====================
+// Control Panel Specific
+// ====================
+.control-panel {
+  @extend .management-container;
 
   .panel-container {
     text-align: center;
   }
 
-  /* Statistics Section */
   .stats-section {
     display: flex;
     justify-content: space-evenly;
@@ -159,25 +258,40 @@ p {
 
   .stat {
     text-align: center;
+
+    h2 {
+      font-size: 2.4rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: var(--neutral);
+      margin: 4px 0 0;
+    }
   }
 
-  .stat h2 {
-    font-size: 2.4rem;
-    color: var(--primary);
-    margin: 0;
-  }
-
-  .stat p {
-    font-size: 1.2rem;
-    color: var(--neutral);
-    margin: 4px 0 0;
-  }
-
-  /* Links Section */
   .links-section {
     display: flex;
     justify-content: center;
     gap: 16px;
     margin: 24px 0;
+  }
+}
+
+.teacher-name {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.management-form {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
