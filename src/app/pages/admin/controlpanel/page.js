@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function AdminControlPanel() {
   const [totalClasses, setTotalClasses] = useState(0);
@@ -9,6 +9,35 @@ export default function AdminControlPanel() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Fetch both statistics in parallel
+        const [classesResponse, teachersResponse] = await Promise.all([
+          fetch("/api/admin/classes"),
+          fetch("/api/admin/teachers"),
+        ]);
+
+        if (!classesResponse.ok || !teachersResponse.ok) {
+          throw new Error("Failed to fetch statistics");
+        }
+
+        const classesData = await classesResponse.json();
+        const teachersData = await teachersResponse.json();
+
+        setTotalClasses(classesData.length);
+        setTotalTeachers(teachersData.length);
+      } catch (error) {
+        console.error("Error fetching statistics:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
@@ -55,11 +84,11 @@ export default function AdminControlPanel() {
 
         <div className="stats-section">
           <div className="stat">
-            <h2>{totalClasses}</h2>
+            <h2>{loading ? "--" : totalClasses}</h2>
             <p>Classes</p>
           </div>
           <div className="stat">
-            <h2>{totalTeachers}</h2>
+            <h2>{loading ? "--" : totalTeachers}</h2>
             <p>Teachers</p>
           </div>
         </div>

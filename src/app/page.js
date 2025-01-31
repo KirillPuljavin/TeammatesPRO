@@ -81,7 +81,7 @@ export default function LoginPage() {
         </div>
 
         {isTeacher && (
-          <form onSubmit={handleTeacherSubmit} className="form">
+          <form onSubmit={handleTeacherSubmit} className="login-form">
             <input
               type="text"
               placeholder="Name"
