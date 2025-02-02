@@ -7,6 +7,7 @@
   --primary: #5a67d8;
   --primary-light: #7b8cfc;
   --secondary: #ed64a6;
+  --accent-green: #38a169;
   --neutral: #9a9a9a;
   --neutral-border: #e2e8f0;
   --shadow: rgba(0, 0, 0, 0.05);
@@ -120,6 +121,14 @@ p {
 
     &:hover {
       background: #f08dbb;
+    }
+  }
+
+  &.contrast {
+    background: var(--accent-green);
+
+    &:hover {
+      background: #7bd39d;
     }
   }
 

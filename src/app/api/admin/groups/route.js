@@ -8,7 +8,7 @@ export async function GET() {
         id,
         name,
         class,
-        leader,
+        leader
       FROM groups
     `);
 
