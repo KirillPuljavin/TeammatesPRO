@@ -43,41 +43,68 @@ export default function GroupRandomizer() {
     }
   }, [currentClass]);
 
+  const assignedGroupNames = groups.map((group) => group.name);
+  const unassignedStudents = students.filter(
+    (student) =>
+      !student.group_name || !assignedGroupNames.includes(student.group_name)
+  );
+
   return (
     <div className="management-container flex-center">
-      <div className="group-randomizer-container">
+      <div className="content-wrapper">
         <div className="groups-section">
           {loading ? (
             <p className="status-message loading">
               Loading groups and students...
             </p>
           ) : (
-            groups.map((group) => {
-              const groupStudents = students.filter(
-                (student) => student.group_name === group.name
-              );
-              return (
-                <div key={group.id} className="group-card">
-                  <h3 className="group-name">{group.name}</h3>
+            <>
+              {groups.map((group) => {
+                const groupStudents = students.filter(
+                  (student) => student.group_name === group.name
+                );
+                return (
+                  <div key={group.id} className="group-card">
+                    <h3 className="group-name">{group.name}</h3>
+                    <div className="students-list">
+                      {groupStudents.map((student) => (
+                        <div key={student.id} className="student">
+                          <img
+                            className="student-img"
+                            src={
+                              student.profilePic ||
+                              "https://via.placeholder.com/60?text=Profile"
+                            }
+                            alt={student.name}
+                          />
+                          <span className="student-name">{student.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+              {unassignedStudents.length > 0 && (
+                <div className="group-card unassigned">
+                  <h3 className="group-name">Unassigned Students</h3>
                   <div className="students-list">
-                    {groupStudents.map((student) => (
+                    {unassignedStudents.map((student) => (
                       <div key={student.id} className="student">
                         <img
+                          className="student-img"
                           src={
                             student.profilePic ||
                             "https://via.placeholder.com/60?text=Profile"
                           }
                           alt={student.name}
-                          className="student-img"
                         />
-
                         <span className="student-name">{student.name}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-              );
-            })
+              )}
+            </>
           )}
         </div>
         <div className="randomize-sidebar">
