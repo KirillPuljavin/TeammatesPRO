@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -53,7 +54,7 @@ export default function GroupRandomizer() {
           ) : (
             groups.map((group) => {
               const groupStudents = students.filter(
-                (student) => student.group === group.id
+                (student) => student.group_name === group.name
               );
               return (
                 <div key={group.id} className="group-card">
@@ -62,10 +63,14 @@ export default function GroupRandomizer() {
                     {groupStudents.map((student) => (
                       <div key={student.id} className="student">
                         <img
-                          src={student.profilePic || "/placeholder.png"}
+                          src={
+                            student.profilePic ||
+                            "https://via.placeholder.com/60?text=Profile"
+                          }
                           alt={student.name}
                           className="student-img"
                         />
+
                         <span className="student-name">{student.name}</span>
                       </div>
                     ))}
