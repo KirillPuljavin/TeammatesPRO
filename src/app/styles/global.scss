@@ -319,14 +319,13 @@ p {
   }
 
   .group-card {
-    position: relative; // for the drag-over pseudo-element
     background: #fff;
     border: 1px solid var(--neutral-border);
     border-left: 4px solid var(--primary);
     border-radius: 8px;
     padding: 16px;
     box-shadow: 0 2px 4px var(--shadow);
-    transition: var(--transition);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -337,16 +336,9 @@ p {
     }
 
     &.drag-over {
-      // Outline that covers the entire card, even over child elements
-      &::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border: 2px dashed var(--primary);
-        border-radius: 8px;
-        pointer-events: none;
-      }
-      transform: scale(1.01);
+      border: 2px dashed var(--primary);
+      border-left: 6px solid var(--primary);
+      transform: scale(1.02);
     }
 
     .group-name-input {
@@ -359,7 +351,7 @@ p {
       margin-bottom: 12px;
       width: 100%;
       max-width: 80%;
-      transition: var(--transition);
+      transition: border-bottom 0.2s ease;
 
       &:focus {
         outline: none;
@@ -380,7 +372,7 @@ p {
         width: 60px;
         text-align: center;
         cursor: grab;
-        transition: var(--transition);
+        transition: opacity 0.2s ease, transform 0.2s ease;
 
         &.dragging {
           opacity: 0.4;
@@ -395,10 +387,10 @@ p {
           object-fit: cover;
           margin-bottom: 4px;
           border: 2px solid var(--neutral-border);
-          transition: var(--transition);
+          transition: border-color 0.2s ease;
 
           &.leader {
-            border: 2px solid #ffd700;
+            border-color: #ffd700;
           }
         }
 
@@ -410,7 +402,7 @@ p {
     }
   }
 
-  // Alternate left border colors
+  // Alternate left border colors for variety
   .groups-grid .group-card:nth-child(3n + 1) {
     border-left-color: var(--primary);
   }
@@ -438,13 +430,9 @@ p {
     border: 1px dashed var(--neutral-border);
     border-left: none;
 
-    &.drag-over::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border: 2px dashed var(--accent-green);
-      border-radius: 8px;
-      pointer-events: none;
+    &.drag-over {
+      border-color: var(--accent-green);
+      transform: scale(1.02);
     }
 
     .group-name-input {

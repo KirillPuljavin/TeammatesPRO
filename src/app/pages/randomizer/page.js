@@ -18,7 +18,7 @@ export default function GroupRandomizer() {
   const [groupCount, setGroupCount] = useState("");
   const [groupSize, setGroupSize] = useState("");
 
-  // Track dragging for visual feedback
+  // Track dragging states for feedback styling
   const [draggingStudentId, setDraggingStudentId] = useState(null);
   const [dragOverGroup, setDragOverGroup] = useState(null);
 
@@ -115,8 +115,14 @@ export default function GroupRandomizer() {
     e.dataTransfer.effectAllowed = "move";
   }
 
-  function handleDragEnd() {
+  // Ensure we always clear after a drop or a drag end
+  function clearDragState() {
     setDraggingStudentId(null);
+    setDragOverGroup(null);
+  }
+
+  function handleDragEnd() {
+    clearDragState();
   }
 
   function handleDragOver(e) {
@@ -127,14 +133,15 @@ export default function GroupRandomizer() {
     setDragOverGroup(groupName);
   }
 
-  function handleDragLeave() {
-    setDragOverGroup(null);
+  function handleDragLeave(e) {
+    // Only clear if truly leaving the card, not entering a child
+    if (e.currentTarget === e.target) setDragOverGroup(null);
   }
 
   function handleDrop(e, targetGroupName) {
     e.preventDefault();
     const studentId = e.dataTransfer.getData("text/studentId");
-    setDragOverGroup(null);
+    clearDragState();
     setDraftStudents((prev) =>
       prev.map((s) =>
         s.id.toString() === studentId
@@ -152,7 +159,6 @@ export default function GroupRandomizer() {
 
   async function handleSave() {
     try {
-      // Remove old groups for this class
       const allGroupsRes = await fetch("/api/groups");
       const allGroups = await allGroupsRes.json();
       const currentClassGroups = allGroups.filter(
@@ -162,7 +168,6 @@ export default function GroupRandomizer() {
         await fetch(`/api/groups?id=${grp.id}`, { method: "DELETE" });
       }
 
-      // Insert new groups, leader = first student
       for (const grp of draftGroups) {
         const groupStudents = draftStudents.filter(
           (s) => s.group_name === grp.name
@@ -179,7 +184,6 @@ export default function GroupRandomizer() {
         });
       }
 
-      // Update existing students
       const currentClassStudents = students.filter(
         (s) => s.class === currentClass
       );
@@ -196,7 +200,7 @@ export default function GroupRandomizer() {
         });
       }
     } catch {
-      // Ignore errors
+      // ignore
     }
   }
 
@@ -233,7 +237,7 @@ export default function GroupRandomizer() {
                   <div className="students-grid">
                     {groupStudents.map((s) => {
                       const isLeader = s.id === leaderId;
-                      const draggable = !isLeader; // leader not draggable
+                      const draggable = !isLeader;
                       return (
                         <div
                           key={s.id}
