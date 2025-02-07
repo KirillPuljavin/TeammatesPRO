@@ -30,7 +30,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
 * {
   box-sizing: border-box;
 }
@@ -54,13 +53,10 @@ h1 {
   margin-bottom: 8px;
   color: var(--foreground);
 }
-
 p {
   font-size: 1rem;
   color: var(--neutral);
-  margin-bottom: 24px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 24px;
   text-align: center;
   width: 100%;
   max-width: 700px;
@@ -79,19 +75,16 @@ p {
   border-radius: 6px;
   margin: 15px 5px;
   transition: var(--transition);
-
   &:focus {
     border-color: var(--primary);
     box-shadow: 0 0 6px var(--primary-light);
     outline: none;
   }
 }
-
 .error {
   font-size: 13px;
   color: var(--secondary);
-  margin-top: -15px;
-  margin-bottom: 8px;
+  margin: -15px 0 8px;
 }
 
 // ====================
@@ -109,28 +102,23 @@ p {
   cursor: pointer;
   transition: var(--transition);
   margin: 15px 0;
-  management-form &:hover {
+  &:hover {
     background: var(--primary-light);
     box-shadow: 0px 4px 8px var(--shadow-hover);
     transform: translateY(-1px);
   }
-
   &.secondary {
     background: var(--secondary);
-
     &:hover {
       background: #f08dbb;
     }
   }
-
   &.contrast {
     background: var(--accent-green);
-
     &:hover {
       background: #7bd39d;
     }
   }
-
   &.compact {
     width: auto;
     padding: 0 1rem;
@@ -138,16 +126,13 @@ p {
     font-size: 14px;
     margin: 0;
   }
-
   &.danger {
     background: var(--secondary);
-
     &:hover {
       background: #e74c3c;
     }
   }
 }
-
 .button-group {
   display: flex;
   justify-content: center;
@@ -166,7 +151,6 @@ p {
   border-radius: 12px;
   padding: 24px;
   margin: 32px 0;
-
   .management-header {
     margin-bottom: 24px;
     text-align: center;
@@ -178,10 +162,8 @@ p {
 // ====================
 .data-list {
   list-style: none;
-  margin: 0;
+  margin: 0 0 24px;
   padding: 0;
-  margin-bottom: 24px;
-
   .data-item {
     display: flex;
     justify-content: space-between;
@@ -192,17 +174,14 @@ p {
     margin-bottom: 8px;
     box-shadow: 0 2px 4px var(--shadow);
     transition: var(--transition);
-
     &:hover {
       transform: translateX(5px);
       box-shadow: 0 4px 8px var(--shadow-hover);
     }
-
     .item-content {
       flex: 1;
       margin-right: 16px;
     }
-
     .item-actions {
       display: flex;
       gap: 8px;
@@ -214,19 +193,21 @@ p {
 // Form Components
 // ====================
 .management-form {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
   padding-top: 24px;
   border-top: 1px solid var(--neutral-border);
-
   .form-input {
     flex: 1;
     max-width: 400px;
   }
   button {
     width: 100%;
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -238,12 +219,10 @@ p {
   border-radius: 6px;
   text-align: center;
   margin: 1rem 0;
-
   &.loading {
     background: rgba(var(--primary), 0.1);
     color: var(--primary);
   }
-
   &.error {
     background: rgba(var(--secondary), 0.1);
     color: var(--secondary);
@@ -261,25 +240,20 @@ p {
   gap: 1rem;
   width: 100%;
   max-width: 400px;
-
   .input-group {
     display: flex;
     gap: 1rem;
     width: 100%;
-
-    // For mobile responsiveness
     @media (max-width: 480px) {
       flex-direction: column;
       gap: 0.5rem;
     }
   }
-
   .input {
     width: 100%;
     margin: 0;
     flex: 1;
   }
-
   .button {
     width: 100%;
     margin: 0;
@@ -291,33 +265,33 @@ p {
 // ====================
 .control-panel {
   @extend .management-container;
-
+  .input,
+  .button {
+    width: 100% !important;
+    max-width: 100%;
+    margin: 15px auto;
+  }
   .panel-container {
     text-align: center;
   }
-
   .stats-section {
     display: flex;
     justify-content: space-evenly;
     margin: 24px 0;
-  }
-
-  .stat {
-    text-align: center;
-
-    h2 {
-      font-size: 2.4rem;
-      color: var(--primary);
-      margin: 0;
-    }
-
-    p {
-      font-size: 1.2rem;
-      color: var(--neutral);
-      margin: 4px 0 0;
+    .stat {
+      text-align: center;
+      h2 {
+        font-size: 2.4rem;
+        color: var(--primary);
+        margin: 0;
+      }
+      p {
+        font-size: 1.2rem;
+        color: var(--neutral);
+        margin: 4px 0 0;
+      }
     }
   }
-
   .links-section {
     display: flex;
     justify-content: center;
@@ -326,18 +300,127 @@ p {
   }
 }
 
+// ====================
+// Additional Elements
+// ====================
 .teacher-name {
   font-weight: 600;
   color: var(--foreground);
 }
 
-.management-form {
+// ====================
+// Group Randomizer Specific
+// ====================
+.group-randomizer-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+.groups-section {
+  flex: 1;
   display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr 1fr auto;
-  align-items: end;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+.group-card {
+  background: #fff;
+  border: 1px solid var(--neutral-border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px var(--shadow-hover);
+}
+.group-name {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  color: var(--foreground);
+  text-align: center;
+}
+.students-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.student {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  text-align: center;
+}
+.student-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 4px;
+}
+.student-name {
+  font-size: 0.9rem;
+  color: var(--foreground);
+}
+.randomize-sidebar {
+  background: #fff;
+  border: 1px solid var(--neutral-border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px var(--shadow-hover);
+  width: 300px;
+  flex-shrink: 0;
+}
+.randomize-sidebar h2 {
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  text-align: center;
+  color: var(--foreground);
+}
+.randomize-params {
+  margin-bottom: 16px;
+}
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+// ====================
+// Mobile Styles (Screen width <= 900px)
+// ====================
+@media (max-width: 900px) {
+  .input,
+  .button {
+    width: 100% !important;
+    max-width: 100%;
+    margin: 15px auto;
+  }
+  .management-form .form-input {
+    width: 100%;
+    max-width: 100%;
+  }
+  .management-container {
+    max-width: 95%;
+    padding: 20px;
+  }
+  .management-form {
+    grid-template-columns: 1fr !important;
+  }
+  .login-form {
+    .input-group {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+  .control-panel {
+    .stats-section {
+      overflow-x: auto;
+    }
+  }
+  .button-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+  p {
+    padding: 0 1rem;
+  }
+  .group-randomizer-container {
+    flex-direction: column;
+  }
+  .randomize-sidebar {
+    width: 100%;
   }
 }

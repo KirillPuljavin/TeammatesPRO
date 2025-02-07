@@ -20,7 +20,7 @@ export default function AdminControlPanel() {
           await Promise.all([
             fetch("/api/admin/classes"),
             fetch("/api/admin/teachers"),
-            fetch("/api/admin/groups"),
+            fetch("/api/groups"),
           ]);
 
         if (!classesResponse.ok || !teachersResponse.ok || !groupsResponse.ok) {
@@ -121,7 +121,7 @@ export default function AdminControlPanel() {
           </button>
           <button
             className="button contrast"
-            onClick={() => (window.location.href = "/pages/admin/manageGroups")}
+            onClick={() => (window.location.href = "/pages/randomizer")}
           >
             Manage Groups
           </button>
