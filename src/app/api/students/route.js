@@ -21,12 +21,12 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { name, class: className, group_name } = await request.json();
+    const { name, class: className } = await request.json();
     const result = await db.execute(
-      `INSERT INTO students (name, class, group_name)
-       VALUES (?, ?, ?)
+      `INSERT INTO students (name, class)
+       VALUES (?, ?)
        RETURNING *`,
-      [name, className, group_name]
+      [name, className]
     );
     return new Response(JSON.stringify(result.rows[0]), {
       status: 201,
@@ -35,6 +35,23 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error creating student:", error);
     return new Response(JSON.stringify({ error: "Failed to create student" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+export async function PATCH(request) {
+  try {
+    const { id, group_name } = await request.json();
+    await db.execute(`UPDATE students SET group_name = ? WHERE id = ?`, [
+      group_name,
+      id,
+    ]);
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    console.error("Error updating student:", error);
+    return new Response(JSON.stringify({ error: "Failed to update student" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

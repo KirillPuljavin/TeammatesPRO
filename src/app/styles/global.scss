@@ -25,6 +25,7 @@ body {
   background: var(--background);
   margin: 0;
   min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -301,90 +302,200 @@ p {
 }
 
 // ====================
-// Additional Elements
+// Groups Randomizer Specific
 // ====================
-.teacher-name {
-  font-weight: 600;
-  color: var(--foreground);
-}
-
-// ====================
-// Group Randomizer Specific
-// ====================
-.content-wrapper {
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
-  width: 100%;
+.groups-container {
+  width: 90%;
   max-width: 1200px;
-  .groups-section {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 16px;
-    justify-content: flex-start;
-    .group-card {
-      background: #fff;
-      border: 1px solid var(--neutral-border);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 4px 12px var(--shadow-hover);
-      min-width: 300px;
-      max-width: 400px;
-      &.unassigned {
-        border-style: dashed;
-        background: var(--background);
+    width: 100%;
+  }
+
+  .group-card {
+    position: relative; // for the drag-over pseudo-element
+    background: #fff;
+    border: 1px solid var(--neutral-border);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px var(--shadow);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--shadow-hover);
+    }
+
+    &.drag-over {
+      // Outline that covers the entire card, even over child elements
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 2px dashed var(--primary);
+        border-radius: 8px;
+        pointer-events: none;
       }
-      .group-name {
-        font-size: 1.8rem;
-        margin-bottom: 12px;
-        color: var(--foreground);
+      transform: scale(1.01);
+    }
+
+    .group-name-input {
+      font-size: 1.4rem;
+      font-weight: 600;
+      text-align: center;
+      color: var(--foreground);
+      border: none;
+      background: transparent;
+      margin-bottom: 12px;
+      width: 100%;
+      max-width: 80%;
+      transition: var(--transition);
+
+      &:focus {
+        outline: none;
+        border-bottom: 2px solid var(--primary);
+      }
+    }
+
+    .students-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+
+      .student {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 60px;
         text-align: center;
-      }
-      .students-list {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-        justify-items: center;
-        .student {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-          .student-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 4px;
+        cursor: grab;
+        transition: var(--transition);
+
+        &.dragging {
+          opacity: 0.4;
+          transform: scale(0.9);
+          cursor: grabbing;
+        }
+
+        .student-img {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-bottom: 4px;
+          border: 2px solid var(--neutral-border);
+          transition: var(--transition);
+
+          &.leader {
+            border: 2px solid #ffd700;
           }
-          .student-name {
-            font-size: 0.9rem;
-            color: var(--foreground);
-          }
+        }
+
+        .student-name {
+          font-size: 0.9rem;
+          color: var(--foreground);
         }
       }
     }
   }
-  .randomize-sidebar {
-    background: #fff;
-    border: 1px solid var(--neutral-border);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 4px 12px var(--shadow-hover);
-    width: 300px;
-    flex-shrink: 0;
-    h2 {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
-      text-align: center;
-      color: var(--foreground);
+
+  // Alternate left border colors
+  .groups-grid .group-card:nth-child(3n + 1) {
+    border-left-color: var(--primary);
+  }
+  .groups-grid .group-card:nth-child(3n + 2) {
+    border-left-color: var(--secondary);
+  }
+  .groups-grid .group-card:nth-child(3n) {
+    border-left-color: var(--accent-green);
+  }
+
+  // Match group-name text color
+  .groups-grid .group-card:nth-child(3n + 1) .group-name-input {
+    color: var(--primary);
+  }
+  .groups-grid .group-card:nth-child(3n + 2) .group-name-input {
+    color: var(--secondary);
+  }
+  .groups-grid .group-card:nth-child(3n) .group-name-input {
+    color: var(--accent-green);
+  }
+
+  .group-card.unassigned {
+    grid-column: 1 / -1;
+    background: var(--background);
+    border: 1px dashed var(--neutral-border);
+    border-left: none;
+
+    &.drag-over::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 2px dashed var(--accent-green);
+      border-radius: 8px;
+      pointer-events: none;
     }
-    .randomize-params {
-      margin-bottom: 16px;
+
+    .group-name-input {
+      color: var(--neutral);
     }
-    .button-group {
-      @extend .button-group;
+  }
+}
+
+.randomize-sidebar {
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  box-shadow: 0 4px 12px var(--shadow-hover);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    color: var(--primary);
+  }
+
+  .method-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .input-group {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 16px;
+
+    @media (max-width: 480px) {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  .button {
+    width: 100%;
+    max-width: 200px;
+    background: var(--secondary);
+    &:hover {
+      background: #f08dbb;
     }
   }
 }

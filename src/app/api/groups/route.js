@@ -27,20 +27,14 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const {
-      name,
-      class: className,
-      leader,
-      student,
-      name_students_group_name,
-    } = await request.json();
+    const { name, class: className, leader } = await request.json();
 
     const result = await db.execute(
       `INSERT INTO groups 
        (name, class, leader) 
        VALUES (?, ?, ?) 
        RETURNING *`,
-      [name, className, leader, student, name_students_group_name]
+      [name, className, leader]
     );
 
     return new Response(JSON.stringify(result.rows[0]), {
