@@ -1,8 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function GroupRandomizer() {
+  const searchParams = useSearchParams();
+  const currentClass = searchParams.get("class");
+  console.log("Current class:", currentClass);
+
   const [groups, setGroups] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,8 +16,8 @@ export default function GroupRandomizer() {
     async function fetchData() {
       try {
         const [groupsRes, studentsRes] = await Promise.all([
-          fetch("/api/groups"),
-          fetch("/api/students"),
+          fetch(`/api/groups?class=${currentClass}`),
+          fetch(`/api/students?class=${currentClass}`),
         ]);
         if (!groupsRes.ok) {
           throw new Error("Failed to fetch groups");
@@ -30,13 +35,16 @@ export default function GroupRandomizer() {
         setLoading(false);
       }
     }
-    fetchData();
-  }, []);
+    if (currentClass) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
+  }, [currentClass]);
 
   return (
     <div className="management-container flex-center">
       <div className="group-randomizer-container">
-        {/* Main Groups Section */}
         <div className="groups-section">
           {loading ? (
             <p className="status-message loading">
@@ -67,12 +75,10 @@ export default function GroupRandomizer() {
             })
           )}
         </div>
-
-        {/* Randomize Sidebar / Bottom Menu */}
         <div className="randomize-sidebar">
-          <h2>Randomize Groups</h2>
+          <h2>Randomize Groups for {currentClass}</h2>
           <div className="randomize-params">
-            {/* Future parameter inputs will go here */}
+            {/* Future parameter inputs go here */}
           </div>
           <div className="button-group">
             <button className="button apply-btn">Apply</button>
