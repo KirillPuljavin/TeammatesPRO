@@ -7,8 +7,8 @@ export default function ManageClasses() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [newClassName, setNewClassName] = useState("");
+  const [selectedSchool, setSelectedSchool] = useState("NTI");
 
-  // Fetch classes on mount
   useEffect(() => {
     fetchClasses();
   }, []);
@@ -36,7 +36,6 @@ export default function ManageClasses() {
 
       if (!response.ok) throw new Error("Failed to delete class");
 
-      // Optimistic update
       setClasses((prev) => prev.filter((cls) => cls.id !== classId));
     } catch (err) {
       setError(err.message);
@@ -51,7 +50,7 @@ export default function ManageClasses() {
       const response = await fetch("/api/admin/classes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newClassName }),
+        body: JSON.stringify({ name: newClassName, school: selectedSchool }),
       });
 
       if (!response.ok) throw new Error("Failed to add class");
@@ -59,6 +58,7 @@ export default function ManageClasses() {
       const newClass = await response.json();
       setClasses((prev) => [...prev, newClass]);
       setNewClassName("");
+      setSelectedSchool("NTI");
     } catch (err) {
       setError(err.message);
     }
@@ -80,7 +80,9 @@ export default function ManageClasses() {
           <ul className="data-list">
             {classes.map((cls) => (
               <li key={cls.id} className="data-item">
-                <div className="item-content">{cls.name}</div>
+                <div className="item-content">
+                  {cls.name} | {cls.school}
+                </div>
                 <div className="item-actions">
                   <button
                     className="button compact danger"
@@ -102,6 +104,13 @@ export default function ManageClasses() {
               className="input form-input"
               required
             />
+            <select
+              value={selectedSchool}
+              onChange={(e) => setSelectedSchool(e.target.value)}
+              className="input form-select"
+            >
+              <option value="NTI">NTI</option>
+            </select>
             <button type="submit" className="button">
               Add New Class
             </button>

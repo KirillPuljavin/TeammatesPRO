@@ -19,17 +19,20 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { name } = await request.json();
-    if (!name) {
-      return new Response(JSON.stringify({ error: "Class name is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    const { name, school } = await request.json();
+    if (!name || !school) {
+      return new Response(
+        JSON.stringify({ error: "Class name and school are required" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     const result = await db.execute(
-      "INSERT INTO classes (name) VALUES (?) RETURNING *",
-      [name]
+      "INSERT INTO classes (name, school) VALUES (?, ?) RETURNING *",
+      [name, school]
     );
 
     return new Response(JSON.stringify(result.rows[0]), {
