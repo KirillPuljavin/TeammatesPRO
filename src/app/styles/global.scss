@@ -92,7 +92,7 @@ p {
 // Buttons
 // ====================
 .button {
-  width: 260px;
+  min-width: 200px;
   height: 44px;
   font-size: 15px;
   font-weight: 600;
@@ -103,6 +103,8 @@ p {
   cursor: pointer;
   transition: var(--transition);
   margin: 15px 0;
+  padding: 0 15px;
+
   &:hover {
     background: var(--primary-light);
     box-shadow: 0px 4px 8px var(--shadow-hover);
@@ -433,7 +435,7 @@ p {
   background: #fff;
   box-shadow: 0 4px 12px var(--shadow-hover);
   border-radius: 12px;
-  padding: 24px;
+  padding: 16px;
   margin-top: 32px;
   display: flex;
   flex-direction: column;
@@ -444,49 +446,41 @@ p {
     margin-bottom: 16px;
     color: var(--primary);
   }
-
   .method-selector {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
   }
-
   .input-group {
     display: flex;
     gap: 16px;
     width: 100%;
     max-width: 600px;
     margin-bottom: 16px;
-
     .input {
       width: 100%;
     }
   }
 
   .button {
-    width: 100%;
+    width: auto;
     max-width: 200px;
     background: var(--secondary);
-    margin-bottom: 8px;
-
+    margin: 10px;
     &:hover {
       background: #f08dbb;
     }
-
     &.contrast {
       margin-bottom: 12px;
     }
   }
-
   .save-message {
     margin: 0;
     font-size: 0.9rem;
     text-align: center;
-
     &.success {
       color: var(--accent-green);
     }
-
     &.error {
       color: var(--secondary);
     }
@@ -501,7 +495,7 @@ p {
   .button {
     width: 100% !important;
     max-width: 100%;
-    margin: 15px auto;
+    margin: 15px auto auto auto !important;
   }
   .management-form .form-input {
     width: 100%;
