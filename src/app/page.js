@@ -61,23 +61,23 @@ export default function LoginPage() {
   return (
     <>
       <div className="flex-center">
-        <h1>Welcome to TeammatesPro</h1>
+        <h1>Välkommen till TeammatesPro</h1>
         <p>
-          TeammatesPro is a tool that helps schools quickly randomize and manage
-          student groups across classes, enabling effortless group setups for
-          projects and activities with just one click.
+          TeammatesPro är ett verktyg som hjälper skolor att snabbt slumpa och
+          hantera elevgrupper över klasser, vilket möjliggör enkla
+          gruppindelningar för projekt och aktiviteter med bara ett klick.
         </p>
 
-        <h2>I am...</h2>
+        <h2>Jag är...</h2>
         <div className="button-group">
           <button className="button" onClick={handleStudentClick}>
-            Student
+            Elev
           </button>
           <button
             className="button secondary"
             onClick={() => setIsTeacher(!isTeacher)}
           >
-            Teacher
+            Lärare
           </button>
         </div>
 
@@ -85,7 +85,7 @@ export default function LoginPage() {
           <form onSubmit={handleTeacherSubmit} className="login-form">
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Namn"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className={`input ${errors.name ? "error-border" : ""}`}
@@ -94,7 +94,7 @@ export default function LoginPage() {
 
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Lösenord"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className={`input ${errors.password ? "error-border" : ""}`}
@@ -106,7 +106,7 @@ export default function LoginPage() {
             )}
 
             <button type="submit" className="button">
-              Login
+              Logga in
             </button>
           </form>
         )}

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Header({ title = "Page Title" }) {
+export default function Header({ title = "NTI Gymnasiet Helsingborg" }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [userName, setUserName] = useState("Guest");
@@ -24,6 +24,11 @@ export default function Header({ title = "Page Title" }) {
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
+  const handleLinkClick = (url) => {
+    setMenuOpen(false);
+    router.push(url);
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -34,10 +39,14 @@ export default function Header({ title = "Page Title" }) {
           {menuOpen && (
             <div className="dropdown-menu">
               <ul>
-                <li onClick={() => router.push("/")}>Inlogning</li>
-                <li onClick={() => router.push("/pages/classes")}>Klasser</li>
+                <li onClick={() => handleLinkClick("/")}>Inlogning</li>
+                <li onClick={() => handleLinkClick("/pages/classes")}>
+                  Klasser
+                </li>
                 <li
-                  onClick={() => router.push("/pages/randomizer?class=1TEK2")}
+                  onClick={() =>
+                    handleLinkClick("/pages/randomizer?class=1TEK2")
+                  }
                 >
                   Grupp Hanterare
                 </li>
