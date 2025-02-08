@@ -17,8 +17,8 @@ export default function GroupRandomizer() {
   const [method, setMethod] = useState("count");
   const [groupCount, setGroupCount] = useState("");
   const [groupSize, setGroupSize] = useState("");
+  const [saveStatus, setSaveStatus] = useState(null);
 
-  // Track dragging states for feedback styling
   const [draggingStudentId, setDraggingStudentId] = useState(null);
   const [dragOverGroup, setDragOverGroup] = useState(null);
 
@@ -34,12 +34,18 @@ export default function GroupRandomizer() {
           groupsRes.json(),
           studentsRes.json(),
         ]);
-        setGroups(groupsData);
+
+        const normalizedGroups = groupsData.map((g) => ({
+          ...g,
+          leaderId: g.leader || null,
+        }));
+
+        setGroups(normalizedGroups);
         setStudents(studentsData);
-        setDraftGroups(groupsData);
+        setDraftGroups(normalizedGroups);
         setDraftStudents(studentsData);
       } catch {
-        // Ignore errors
+        // Ignore
       } finally {
         setLoading(false);
       }
@@ -54,6 +60,13 @@ export default function GroupRandomizer() {
   );
 
   function handleGenerate() {
+    setSaveStatus(null);
+
+    const countVal = parseInt(groupCount, 10) || 0;
+    const sizeVal = parseInt(groupSize, 10) || 0;
+    if (method === "count" && countVal < 1) return;
+    if (method === "size" && sizeVal < 1) return;
+
     const shuffled = draftStudents.map((s) => ({ ...s, group_name: null }));
     shuffled.sort(() => Math.random() - 0.5);
 
@@ -62,50 +75,74 @@ export default function GroupRandomizer() {
     const total = shuffled.length;
 
     if (method === "count") {
-      const count = parseInt(groupCount, 10) || 0;
-      for (let i = 0; i < count; i++) {
-        newGroups.push({ id: `temp-${i}`, name: `Group ${i + 1}` });
+      for (let i = 0; i < countVal; i++) {
+        newGroups.push({
+          id: `temp-${i}`,
+          name: `Group ${i + 1}`,
+          leaderId: null,
+        });
       }
-      const baseSize = Math.floor(total / count);
-      const remainder = total % count;
+      const baseSize = Math.floor(total / countVal);
+      const remainder = total % countVal;
       newGroups.forEach((g, i) => {
-        const size = i < remainder ? baseSize + 1 : baseSize;
-        shuffled
-          .slice(offset, offset + size)
-          .forEach((stu) => (stu.group_name = g.name));
-        offset += size;
+        const sliceSize = i < remainder ? baseSize + 1 : baseSize;
+        shuffled.slice(offset, offset + sliceSize).forEach((stu) => {
+          stu.group_name = g.name;
+        });
+        offset += sliceSize;
       });
     } else {
-      const size = parseInt(groupSize, 10) || 0;
-      const count = size > 0 ? Math.ceil(total / size) : 0;
-      for (let i = 0; i < count; i++) {
-        newGroups.push({ id: `temp-${i}`, name: `Group ${i + 1}` });
+      const calcCount = Math.ceil(total / sizeVal);
+      for (let i = 0; i < calcCount; i++) {
+        newGroups.push({
+          id: `temp-${i}`,
+          name: `Group ${i + 1}`,
+          leaderId: null,
+        });
       }
-      const baseSize = Math.floor(total / count);
-      const remainder = total % count;
+      const baseSize = Math.floor(total / calcCount);
+      const remainder = total % calcCount;
       newGroups.forEach((g, i) => {
-        const chunkSize = i < remainder ? baseSize + 1 : baseSize;
-        shuffled
-          .slice(offset, offset + chunkSize)
-          .forEach((stu) => (stu.group_name = g.name));
-        offset += chunkSize;
+        const sliceSize = i < remainder ? baseSize + 1 : baseSize;
+        shuffled.slice(offset, offset + sliceSize).forEach((stu) => {
+          stu.group_name = g.name;
+        });
+        offset += sliceSize;
       });
     }
+
+    // Randomly pick a leader for each group (if any)
+    newGroups = newGroups.map((g) => {
+      const groupStudents = shuffled.filter((s) => s.group_name === g.name);
+      if (groupStudents.length > 0) {
+        const randomIndex = Math.floor(Math.random() * groupStudents.length);
+        g.leaderId = groupStudents[randomIndex].id;
+      }
+      return g;
+    });
 
     setDraftGroups(newGroups);
     setDraftStudents(shuffled);
   }
 
   function handleGroupNameChange(idx, newName) {
+    setSaveStatus(null);
     const oldName = draftGroups[idx].name;
-    const nextGroups = draftGroups.map((g, i) =>
+    const updatedGroups = draftGroups.map((g, i) =>
       i === idx ? { ...g, name: newName } : g
     );
-    const nextStudents = draftStudents.map((s) =>
+    const updatedStudents = draftStudents.map((s) =>
       s.group_name === oldName ? { ...s, group_name: newName } : s
     );
-    setDraftGroups(nextGroups);
-    setDraftStudents(nextStudents);
+    setDraftGroups(updatedGroups);
+    setDraftStudents(updatedStudents);
+  }
+
+  function handleSetLeader(groupId, studentId) {
+    setSaveStatus(null);
+    setDraftGroups((prev) =>
+      prev.map((g) => (g.id === groupId ? { ...g, leaderId: studentId } : g))
+    );
   }
 
   // DRAG & DROP
@@ -115,7 +152,6 @@ export default function GroupRandomizer() {
     e.dataTransfer.effectAllowed = "move";
   }
 
-  // Ensure we always clear after a drop or a drag end
   function clearDragState() {
     setDraggingStudentId(null);
     setDragOverGroup(null);
@@ -134,7 +170,6 @@ export default function GroupRandomizer() {
   }
 
   function handleDragLeave(e) {
-    // Only clear if truly leaving the card, not entering a child
     if (e.currentTarget === e.target) setDragOverGroup(null);
   }
 
@@ -142,6 +177,7 @@ export default function GroupRandomizer() {
     e.preventDefault();
     const studentId = e.dataTransfer.getData("text/studentId");
     clearDragState();
+
     setDraftStudents((prev) =>
       prev.map((s) =>
         s.id.toString() === studentId
@@ -158,7 +194,9 @@ export default function GroupRandomizer() {
   }
 
   async function handleSave() {
+    setSaveStatus(null);
     try {
+      // Remove old groups
       const allGroupsRes = await fetch("/api/groups");
       const allGroups = await allGroupsRes.json();
       const currentClassGroups = allGroups.filter(
@@ -168,26 +206,22 @@ export default function GroupRandomizer() {
         await fetch(`/api/groups?id=${grp.id}`, { method: "DELETE" });
       }
 
+      // Insert new groups
       for (const grp of draftGroups) {
-        const groupStudents = draftStudents.filter(
-          (s) => s.group_name === grp.name
-        );
-        const leaderId = groupStudents.length > 0 ? groupStudents[0].id : null;
         await fetch("/api/groups", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             name: grp.name,
             class: currentClass,
-            leader: leaderId,
+            leader: grp.leaderId,
           }),
         });
       }
 
-      const currentClassStudents = students.filter(
-        (s) => s.class === currentClass
-      );
-      for (const std of currentClassStudents) {
+      // Update existing students
+      const allClassStudents = students.filter((s) => s.class === currentClass);
+      for (const std of allClassStudents) {
         const draft = draftStudents.find((ds) => ds.id === std.id);
         const newGroupName = draft ? draft.group_name : null;
         await fetch("/api/students", {
@@ -199,8 +233,10 @@ export default function GroupRandomizer() {
           }),
         });
       }
+
+      setSaveStatus("success");
     } catch {
-      // ignore
+      setSaveStatus("error");
     }
   }
 
@@ -215,9 +251,6 @@ export default function GroupRandomizer() {
               const groupStudents = draftStudents.filter(
                 (s) => s.group_name === grp.name
               );
-              const leaderId =
-                groupStudents.length > 0 ? groupStudents[0].id : null;
-
               const isDragOver = dragOverGroup === grp.name;
 
               return (
@@ -231,23 +264,21 @@ export default function GroupRandomizer() {
                 >
                   <input
                     className="group-name-input"
+                    type="text"
                     value={grp.name}
                     onChange={(e) => handleGroupNameChange(idx, e.target.value)}
                   />
                   <div className="students-grid">
                     {groupStudents.map((s) => {
-                      const isLeader = s.id === leaderId;
-                      const draggable = !isLeader;
+                      const isLeader = s.id === grp.leaderId;
                       return (
                         <div
                           key={s.id}
                           className={`student ${
                             draggingStudentId === s.id ? "dragging" : ""
                           }`}
-                          draggable={draggable}
-                          onDragStart={(e) =>
-                            draggable && handleDragStart(e, s.id)
-                          }
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, s.id)}
                           onDragEnd={handleDragEnd}
                         >
                           <img
@@ -258,6 +289,14 @@ export default function GroupRandomizer() {
                             alt={s.name}
                           />
                           <span className="student-name">{s.name}</span>
+
+                          <span
+                            className="star-icon"
+                            style={{ opacity: isLeader ? 1 : 0.3 }}
+                            onClick={() => handleSetLeader(grp.id, s.id)}
+                          >
+                            ⭐
+                          </span>
                         </div>
                       );
                     })}
@@ -290,7 +329,7 @@ export default function GroupRandomizer() {
                       }`}
                       draggable
                       onDragStart={(e) => handleDragStart(e, s.id)}
-                      onDragEnd={handleDragEnd}
+                      onDragEnd={clearDragState}
                     >
                       <img
                         className="student-img"
@@ -298,6 +337,10 @@ export default function GroupRandomizer() {
                         alt={s.name}
                       />
                       <span className="student-name">{s.name}</span>
+
+                      <span className="star-icon" style={{ opacity: 0.3 }}>
+                        ★
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -307,6 +350,7 @@ export default function GroupRandomizer() {
 
           <div className="randomize-sidebar">
             <h2>Group Randomizer Settings</h2>
+
             <div className="method-selector">
               <label>
                 <input
@@ -335,6 +379,7 @@ export default function GroupRandomizer() {
                 <input
                   className="input"
                   type="number"
+                  min="1"
                   placeholder="Number of groups"
                   value={groupCount}
                   onChange={(e) => setGroupCount(e.target.value)}
@@ -343,6 +388,7 @@ export default function GroupRandomizer() {
                 <input
                   className="input"
                   type="number"
+                  min="1"
                   placeholder="Group size"
                   value={groupSize}
                   onChange={(e) => setGroupSize(e.target.value)}
@@ -356,6 +402,13 @@ export default function GroupRandomizer() {
             <button className="button contrast" onClick={handleSave}>
               Save Changes
             </button>
+
+            {saveStatus === "success" && (
+              <p className="save-message success">Groups saved successfully!</p>
+            )}
+            {saveStatus === "error" && (
+              <p className="save-message error">Failed to save groups.</p>
+            )}
           </div>
         </>
       )}

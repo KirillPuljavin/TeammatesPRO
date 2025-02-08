@@ -321,11 +321,10 @@ p {
   .group-card {
     background: #fff;
     border: 1px solid var(--neutral-border);
-    border-left: 4px solid var(--primary);
     border-radius: 8px;
     padding: 16px;
     box-shadow: 0 2px 4px var(--shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -337,7 +336,6 @@ p {
 
     &.drag-over {
       border: 2px dashed var(--primary);
-      border-left: 6px solid var(--primary);
       transform: scale(1.02);
     }
 
@@ -345,7 +343,7 @@ p {
       font-size: 1.4rem;
       font-weight: 600;
       text-align: center;
-      color: var(--foreground);
+      color: #f08dbb;
       border: none;
       background: transparent;
       margin-bottom: 12px;
@@ -373,6 +371,7 @@ p {
         text-align: center;
         cursor: grab;
         transition: opacity 0.2s ease, transform 0.2s ease;
+        position: relative;
 
         &.dragging {
           opacity: 0.4;
@@ -398,37 +397,26 @@ p {
           font-size: 0.9rem;
           color: var(--foreground);
         }
+
+        .star-icon {
+          font-size: 1.2rem;
+          color: #ffd700;
+          margin-top: 4px;
+          cursor: pointer;
+          transition: transform 0.2s ease;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
       }
     }
-  }
-
-  // Alternate left border colors for variety
-  .groups-grid .group-card:nth-child(3n + 1) {
-    border-left-color: var(--primary);
-  }
-  .groups-grid .group-card:nth-child(3n + 2) {
-    border-left-color: var(--secondary);
-  }
-  .groups-grid .group-card:nth-child(3n) {
-    border-left-color: var(--accent-green);
-  }
-
-  // Match group-name text color
-  .groups-grid .group-card:nth-child(3n + 1) .group-name-input {
-    color: var(--primary);
-  }
-  .groups-grid .group-card:nth-child(3n + 2) .group-name-input {
-    color: var(--secondary);
-  }
-  .groups-grid .group-card:nth-child(3n) .group-name-input {
-    color: var(--accent-green);
   }
 
   .group-card.unassigned {
     grid-column: 1 / -1;
     background: var(--background);
     border: 1px dashed var(--neutral-border);
-    border-left: none;
 
     &.drag-over {
       border-color: var(--accent-green);
@@ -476,14 +464,38 @@ p {
       flex-direction: column;
       gap: 8px;
     }
+
+    .input {
+      min-width: 0;
+    }
   }
 
   .button {
     width: 100%;
     max-width: 200px;
     background: var(--secondary);
+    margin-bottom: 8px;
+
     &:hover {
       background: #f08dbb;
+    }
+
+    &.contrast {
+      margin-bottom: 12px;
+    }
+  }
+
+  .save-message {
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: center;
+
+    &.success {
+      color: var(--accent-green);
+    }
+
+    &.error {
+      color: var(--secondary);
     }
   }
 }
