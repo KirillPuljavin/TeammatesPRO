@@ -5,7 +5,7 @@
   --background: #f8f9fc;
   --foreground: #2c2c2c;
   --primary: #5a67d8;
-  --primary-light: #7b8c7fc;
+  --primary-light: #d3d0fa;
   --secondary: #ed64a6;
   --accent-green: #38a169;
   --neutral: #9a9a9a;
@@ -27,6 +27,7 @@ body {
   padding-top: 50px;
   min-height: 95vh !important;
   width: 100%;
+  height: calc(100% - 100px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -110,6 +111,67 @@ body {
       font-size: 1rem;
       color: var(--background);
       cursor: pointer;
+    }
+  }
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin-top: 20px;
+  background-color: var(--primary-light);
+
+  p,
+  a {
+    color: var(--primary);
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+  }
+
+  .footer-center {
+    display: flex;
+    gap: 1.5rem;
+
+    a {
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .footer-right {
+    button {
+      background-color: var(--secondary);
+      color: var(--background);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+
+      &:hover {
+        background-color: var(--primary-light);
+      }
     }
   }
 }
