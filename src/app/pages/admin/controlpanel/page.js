@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 export default function AdminControlPanel() {
   const [totalClasses, setTotalClasses] = useState(0);
   const [totalTeachers, setTotalTeachers] = useState(0);
-  const [totalGroups, setTotalGroups] = useState(0);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,25 +14,21 @@ export default function AdminControlPanel() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Fetch Statistics
-        const [classesResponse, teachersResponse, groupsResponse] =
-          await Promise.all([
-            fetch("/api/admin/classes"),
-            fetch("/api/admin/teachers"),
-            fetch("/api/groups"),
-          ]);
+        // Fetch Classes and Teachers statistics
+        const [classesResponse, teachersResponse] = await Promise.all([
+          fetch("/api/admin/classes"),
+          fetch("/api/admin/teachers"),
+        ]);
 
-        if (!classesResponse.ok || !teachersResponse.ok || !groupsResponse.ok) {
+        if (!classesResponse.ok || !teachersResponse.ok) {
           throw new Error("Failed to fetch statistics");
         }
 
         const classesData = await classesResponse.json();
         const teachersData = await teachersResponse.json();
-        const groupsData = await groupsResponse.json();
 
         setTotalClasses(classesData.length);
         setTotalTeachers(teachersData.length);
-        setTotalGroups(groupsData.length);
       } catch (error) {
         console.error("Error fetching statistics:", error);
       } finally {
@@ -54,13 +49,8 @@ export default function AdminControlPanel() {
     try {
       const response = await fetch("/api/admin/changePassword", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
       });
 
       if (response.ok) {
@@ -96,10 +86,6 @@ export default function AdminControlPanel() {
             <h2>{loading ? "--" : totalTeachers}</h2>
             <p>Teachers</p>
           </div>
-          <div className="stat">
-            <h2>{loading ? "--" : totalGroups}</h2>
-            <p>Groups</p>
-          </div>
         </div>
 
         <div className="links-section">
@@ -119,15 +105,8 @@ export default function AdminControlPanel() {
           >
             Manage Teachers
           </button>
-          <button
-            className="button contrast"
-            onClick={() => (window.location.href = "/pages/randomizer")}
-          >
-            Manage Groups
-          </button>
         </div>
 
-        {/* Password Change Section */}
         <div className="form">
           <h2>Change Password</h2>
           <form onSubmit={handlePasswordChange}>

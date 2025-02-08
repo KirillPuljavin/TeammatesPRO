@@ -8,7 +8,6 @@ export default function GroupRandomizer() {
   const searchParams = useSearchParams();
   const currentClass = searchParams.get("class");
 
-  const [groups, setGroups] = useState([]);
   const [students, setStudents] = useState([]);
   const [draftGroups, setDraftGroups] = useState([]);
   const [draftStudents, setDraftStudents] = useState([]);
@@ -40,7 +39,6 @@ export default function GroupRandomizer() {
           leaderId: g.leader || null,
         }));
 
-        setGroups(normalizedGroups);
         setStudents(studentsData);
         setDraftGroups(normalizedGroups);
         setDraftStudents(studentsData);
