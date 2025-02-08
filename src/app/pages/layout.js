@@ -7,7 +7,7 @@ export default async function ProtectedLayout({ children }) {
   const token = cookieStore.get("auth-token")?.value;
 
   if (!token) {
-    redirect("/"); // Redirect to login if no tokena
+    redirect("/"); // Redirect to login if no token
   }
 
   try {
