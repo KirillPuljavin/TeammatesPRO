@@ -44,6 +44,7 @@ body {
   background-color: var(--primary);
   display: flex;
   align-items: center;
+  box-shadow: 0 2px 4px var(--shadow);
   z-index: 1000;
 
   .header-content {
@@ -75,7 +76,7 @@ body {
       border: 1px solid var(--neutral-border);
       border-radius: 4px;
       box-shadow: 0 2px 8px var(--shadow);
-      width: 150px;
+      width: 200px;
 
       ul {
         list-style: none;

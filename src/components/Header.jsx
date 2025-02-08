@@ -1,10 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Header({ title = "Page Title", userName = "Guest" }) {
+export default function Header({ title = "Page Title" }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userName, setUserName] = useState("Guest");
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch("/api/auth/login", { credentials: "include" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.name) setUserName(data.name);
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    }
+    fetchUser();
+  }, []);
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -18,8 +34,8 @@ export default function Header({ title = "Page Title", userName = "Guest" }) {
           {menuOpen && (
             <div className="dropdown-menu">
               <ul>
-                <li onClick={() => router.push("/")}> Inlogning </li>
-                <li onClick={() => router.push("/pages/classes")}> Klasser </li>
+                <li onClick={() => router.push("/")}>Inlogning</li>
+                <li onClick={() => router.push("/pages/classes")}>Klasser</li>
                 <li
                   onClick={() => router.push("/pages/randomizer?class=1TEK2")}
                 >

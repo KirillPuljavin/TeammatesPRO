@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -67,5 +68,18 @@ export async function POST(req) {
       { success: false, message: "An error occurred. Please try again." },
       { status: 500 }
     );
+  }
+}
+
+export async function GET(req) {
+  const token = req.cookies.get("auth-token")?.value;
+  if (!token) {
+    return NextResponse.json({ loggedIn: false, name: null });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return NextResponse.json({ loggedIn: true, name: decoded.name });
+  } catch (error) {
+    return NextResponse.json({ loggedIn: false, name: null });
   }
 }
