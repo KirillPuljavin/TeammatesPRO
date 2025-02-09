@@ -211,7 +211,42 @@ export default function GroupRandomizer() {
     );
   }
 
+  async function handleDeleteGroup(groupId, groupName) {
+    const confirmed = window.confirm(
+      "All students from this group will be unassigned. Are you sure you want to delete this group?"
+    );
+    if (!confirmed) return;
+
+    try {
+      // Delete group from database
+      const res = await fetch(`/api/groups?id=${groupId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        alert("Failed to delete group.");
+        return;
+      }
+      // Update local state: remove group from draftGroups
+      const newDraftGroups = draftGroups.filter((g) => g.id !== groupId);
+      setDraftGroups(newDraftGroups);
+      // Unassign all students from that group
+      const newDraftStudents = draftStudents.map((s) =>
+        s.group_name === groupName ? { ...s, group_name: null } : s
+      );
+      setDraftStudents(newDraftStudents);
+    } catch (error) {
+      console.error("Error deleting group:", error);
+      alert("Error deleting group.");
+    }
+  }
+
   async function handleSave() {
+    // Issue a warning before proceeding
+    const confirmed = window.confirm(
+      "Warning: If you proceed, all existing groups for this class will be permanently lost and overwritten. Do you want to continue?"
+    );
+    if (!confirmed) return;
+
     setSaveStatus("saving");
 
     const handleBeforeUnload = (e) => {
@@ -267,7 +302,6 @@ export default function GroupRandomizer() {
     }
   }
 
-  // JSX HTML
   return (
     <div className="groups-container">
       <div className="class-selector">
@@ -320,6 +354,13 @@ export default function GroupRandomizer() {
                   onDragLeave={handleDragLeave}
                   onDrop={(e) => handleDrop(e, grp.name)}
                 >
+                  {/* Red X delete button (only for non-unassigned groups) */}
+                  <button
+                    className="delete-group-button"
+                    onClick={() => handleDeleteGroup(grp.id, grp.name)}
+                  >
+                    ×
+                  </button>
                   <input
                     className="group-name-input"
                     type="text"

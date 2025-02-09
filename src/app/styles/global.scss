@@ -537,6 +537,7 @@ p {
   }
 
   .group-card {
+    position: relative; // Added for positioning the delete button
     background: #fff;
     border: 1px solid var(--neutral-border);
     border-radius: 8px;
@@ -555,6 +556,23 @@ p {
     &.drag-over {
       border: 2px dashed var(--primary);
       transform: scale(1.02);
+    }
+
+    // Delete button at top right
+    .delete-group-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: red;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 2;
+
+      &:hover {
+        color: darkred;
+      }
     }
 
     .group-name-input {
