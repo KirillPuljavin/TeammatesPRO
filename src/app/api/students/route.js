@@ -1,11 +1,23 @@
+// app/api/students/route.js
 import db from "@/lib/db";
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const result = await db.execute(`
+    const { searchParams } = new URL(request.url);
+    const className = searchParams.get("class");
+
+    let query = `
       SELECT id, name, class, group_name
       FROM students
-    `);
+    `;
+    let params = [];
+
+    if (className) {
+      query += " WHERE class = ?";
+      params.push(className);
+    }
+
+    const result = await db.execute(query, params);
     return new Response(JSON.stringify(result.rows), {
       status: 200,
       headers: { "Content-Type": "application/json" },

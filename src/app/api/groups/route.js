@@ -1,16 +1,27 @@
 // app/api/admin/groups/route.js
 import db from "@/lib/db";
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const groups = await db.execute(`
+    const { searchParams } = new URL(request.url);
+    const className = searchParams.get("class");
+
+    let query = `
       SELECT 
         id,
         name,
         class,
         leader
       FROM groups
-    `);
+    `;
+    const params = [];
+
+    if (className) {
+      query += " WHERE class = ?";
+      params.push(className);
+    }
+
+    const groups = await db.execute(query, params);
 
     return new Response(JSON.stringify(groups.rows), {
       status: 200,
