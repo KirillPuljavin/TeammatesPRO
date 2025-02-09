@@ -1,7 +1,7 @@
 // app/api/admin/classes/route.js
 import db from "@/lib/db";
 
-export async function GET(request) {
+export async function GET() {
   try {
     const classes = await db.execute("SELECT * FROM classes");
     return new Response(JSON.stringify(classes.rows), {

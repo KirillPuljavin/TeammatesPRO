@@ -411,6 +411,39 @@ p {
 }
 
 // ====================
+// Classes Page Specific
+// ====================
+.classes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 16px;
+  background-color: #f5f5f5;
+
+  .class-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .class-summary {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .button {
+      margin-top: 8px;
+    }
+  }
+}
+
+// ====================
 // Control Panel Specific
 // ====================
 .control-panel {
