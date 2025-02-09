@@ -111,9 +111,41 @@ body > :not(.header):not(.footer) {
 
   .right-section {
     .profile-menu {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
       font-size: 1rem;
       color: var(--background);
       cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: border 0.2s ease-in-out;
+
+      &:hover {
+        border: 1px solid var(--background);
+      }
+
+      .logout-button {
+        position: absolute;
+        right: 100%;
+        margin-right: 8px;
+        opacity: 0;
+        transform: translateX(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        background: transparent;
+        color: var(--background);
+        border: 1px solid var(--background);
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      &:hover .logout-button {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
   }
 }
@@ -182,10 +214,14 @@ p {
   border-radius: 6px;
   margin: 15px 5px;
   transition: var(--transition);
+
   &:focus {
     border-color: var(--primary);
     box-shadow: 0 0 6px var(--primary-light);
     outline: none;
+  }
+  &:hover {
+    background-color: var(--background);
   }
 }
 .error {

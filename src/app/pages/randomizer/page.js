@@ -16,6 +16,7 @@ export default function GroupRandomizer() {
   const [method, setMethod] = useState("count");
   const [groupCount, setGroupCount] = useState("");
   const [groupSize, setGroupSize] = useState("");
+  // saveStatus can be null, "saving", "success", or "error"
   const [saveStatus, setSaveStatus] = useState(null);
 
   const [draggingStudentId, setDraggingStudentId] = useState(null);
@@ -43,7 +44,7 @@ export default function GroupRandomizer() {
         setDraftGroups(normalizedGroups);
         setDraftStudents(studentsData);
       } catch {
-        // Ignore
+        // Ignore errors
       } finally {
         setLoading(false);
       }
@@ -109,7 +110,6 @@ export default function GroupRandomizer() {
       });
     }
 
-    // Randomly pick a leader for each group (if any)
     newGroups = newGroups.map((g) => {
       const groupStudents = shuffled.filter((s) => s.group_name === g.name);
       if (groupStudents.length > 0) {
@@ -143,7 +143,7 @@ export default function GroupRandomizer() {
     );
   }
 
-  // DRAG & DROP
+  // DRAG & DROP handlers
   function handleDragStart(e, studentId) {
     setDraggingStudentId(studentId);
     e.dataTransfer.setData("text/studentId", studentId);
@@ -192,7 +192,16 @@ export default function GroupRandomizer() {
   }
 
   async function handleSave() {
-    setSaveStatus(null);
+    // Immediately show the "Saving..." label.
+    setSaveStatus("saving");
+
+    // Prevent the user from closing/reloading the page while saving.
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     try {
       // Remove old groups
       const allGroupsRes = await fetch("/api/groups");
@@ -235,6 +244,9 @@ export default function GroupRandomizer() {
       setSaveStatus("success");
     } catch {
       setSaveStatus("error");
+    } finally {
+      // Remove the beforeunload listener when saving is complete.
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     }
   }
 
@@ -287,7 +299,6 @@ export default function GroupRandomizer() {
                             alt={s.name}
                           />
                           <span className="student-name">{s.name}</span>
-
                           <span
                             className="star-icon"
                             style={{ opacity: isLeader ? 1 : 0.3 }}
@@ -335,7 +346,6 @@ export default function GroupRandomizer() {
                         alt={s.name}
                       />
                       <span className="student-name">{s.name}</span>
-
                       <span className="star-icon" style={{ opacity: 0.3 }}>
                         ★
                       </span>
@@ -397,10 +407,17 @@ export default function GroupRandomizer() {
             <button className="button" onClick={handleGenerate}>
               Generate Groups
             </button>
-            <button className="button contrast" onClick={handleSave}>
+            <button
+              className="button contrast"
+              onClick={handleSave}
+              disabled={saveStatus === "saving"}
+            >
               Save Changes
             </button>
 
+            {saveStatus === "saving" && (
+              <p className="save-message saving">Saving...</p>
+            )}
             {saveStatus === "success" && (
               <p className="save-message success">Groups saved successfully!</p>
             )}

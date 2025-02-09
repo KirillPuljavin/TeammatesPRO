@@ -29,6 +29,22 @@ export default function Header({ title = "NTI Gymnasiet Helsingborg" }) {
     router.push(url);
   };
 
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        console.log("Logout successful:", data);
+        window.location.reload();
+      } else {
+        const errorData = await res.json();
+        console.error("Logout failed:", errorData.message || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error.message);
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -50,6 +66,11 @@ export default function Header({ title = "NTI Gymnasiet Helsingborg" }) {
                 >
                   Grupp Hanterare
                 </li>
+                <li
+                  onClick={() => handleLinkClick("/pages/admin/controlpanel")}
+                >
+                  Kontrol Panel
+                </li>
               </ul>
             </div>
           )}
@@ -60,7 +81,12 @@ export default function Header({ title = "NTI Gymnasiet Helsingborg" }) {
         </div>
 
         <div className="right-section">
-          <div className="profile-menu">{userName}</div>
+          <div className="profile-menu">
+            {userName}
+            <button className="logout-button" onClick={handleLogout}>
+              Logga ut
+            </button>
+          </div>
         </div>
       </div>
     </header>

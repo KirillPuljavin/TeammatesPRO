@@ -38,8 +38,7 @@ export default function LoginPage() {
         });
 
         if (response.ok) {
-          router.push("/pages/classes");
-          window.location.reload();
+          await onLogin();
         } else {
           const data = await response.json();
           if (data.message) {
@@ -56,6 +55,12 @@ export default function LoginPage() {
         }));
       }
     }
+  };
+  const onLogin = async () => {
+    router.push("/pages/classes");
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    window.location.reload();
+    a;
   };
 
   return (
