@@ -18,6 +18,12 @@
 // ====================
 // Base Styles
 // ====================
+nextjs-portal {
+  display: none;
+}
+* {
+  box-sizing: border-box;
+}
 html,
 body {
   font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
@@ -25,16 +31,13 @@ body {
   background: var(--background);
   margin: 0;
   padding-top: 50px;
-  min-height: 95vh !important;
+  min-height: 96vh !important;
   width: 100%;
-  height: calc(100% - 100px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
-* {
-  box-sizing: border-box;
+body > :not(.header):not(.footer) {
+  flex: 1;
 }
 
 .header {
@@ -116,63 +119,26 @@ body {
 }
 
 .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  margin-top: auto;
   width: 100%;
-  margin-top: 20px;
-  background-color: var(--primary-light);
-
-  p,
-  a {
-    color: var(--primary);
-  }
+  border-top: 1px solid var(--neutral-border);
+  padding: 0.5rem 0;
+  background-color: transparent;
 
   .footer-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 0.5rem;
   }
 
-  .footer-left {
-    p {
-      margin: 0;
-      font-size: 0.9rem;
-    }
-  }
-
-  .footer-center {
-    display: flex;
-    gap: 1.5rem;
-
-    a {
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .footer-right {
-    button {
-      background-color: var(--secondary);
-      color: var(--background);
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-
-      &:hover {
-        background-color: var(--primary-light);
-      }
-    }
+  p {
+    color: var(--foreground);
+    margin: 0;
+    padding: 10px;
   }
 }
 
@@ -184,7 +150,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
 }
 
 // ====================
@@ -289,12 +254,16 @@ p {
 // ====================
 .management-container {
   width: 100%;
+  flex: 1;
+  align-self: center;
+  flex-direction: column;
   max-width: 1200px;
   background: #fff;
   box-shadow: 0 4px 12px var(--shadow-hover);
   border-radius: 12px;
   padding: 24px;
-  margin: 32px 0;
+  margin-bottom: 50px;
+
   .management-header {
     margin-bottom: 24px;
     text-align: center;
@@ -448,11 +417,12 @@ p {
 // Groups Randomizer Specific
 // ====================
 .groups-container {
+  @extend .management-container;
   width: 90%;
-  max-width: 1200px;
   display: flex;
-  flex-direction: column;
   align-items: stretch;
+  background: none;
+  box-shadow: none;
 
   .groups-grid {
     display: grid;
