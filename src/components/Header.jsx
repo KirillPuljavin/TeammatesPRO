@@ -60,9 +60,7 @@ export default function Header({ title = "NTI Gymnasiet Helsingborg" }) {
                   Klasser
                 </li>
                 <li
-                  onClick={() =>
-                    handleLinkClick("/pages/randomizer?class=1TEK2")
-                  }
+                  onClick={() => handleLinkClick("/pages/randomizer?class=1")}
                 >
                   Grupp Hanterare
                 </li>
