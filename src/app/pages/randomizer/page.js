@@ -97,7 +97,7 @@ export default function GroupRandomizer() {
       for (let i = 0; i < countVal; i++) {
         newGroups.push({
           id: `temp-${i}`,
-          name: `Group ${i + 1}`,
+          name: `Grupp ${i + 1}`,
           leaderId: null,
         });
       }
@@ -115,7 +115,7 @@ export default function GroupRandomizer() {
       for (let i = 0; i < calcCount; i++) {
         newGroups.push({
           id: `temp-${i}`,
-          name: `Group ${i + 1}`,
+          name: `Grupp ${i + 1}`,
           leaderId: null,
         });
       }
@@ -202,7 +202,7 @@ export default function GroupRandomizer() {
           ? {
               ...s,
               group_name:
-                targetGroupName === "Unassigned Students"
+                targetGroupName === "Ej tilldelade elever"
                   ? null
                   : targetGroupName,
             }
@@ -213,7 +213,7 @@ export default function GroupRandomizer() {
 
   async function handleDeleteGroup(groupId, groupName) {
     const confirmed = window.confirm(
-      "All students from this group will be unassigned. Are you sure you want to delete this group?"
+      "Alla elever i denna grupp kommer att bli ej tilldelade. Är du säker på att du vill ta bort denna grupp?"
     );
     if (!confirmed) return;
 
@@ -223,7 +223,7 @@ export default function GroupRandomizer() {
         method: "DELETE",
       });
       if (!res.ok) {
-        alert("Failed to delete group.");
+        alert("Det gick inte att ta bort gruppen.");
         return;
       }
       // Update local state: remove group from draftGroups
@@ -236,14 +236,14 @@ export default function GroupRandomizer() {
       setDraftStudents(newDraftStudents);
     } catch (error) {
       console.error("Error deleting group:", error);
-      alert("Error deleting group.");
+      alert("Fel vid borttagning av gruppen.");
     }
   }
 
   async function handleSave() {
     // Issue a warning before proceeding
     const confirmed = window.confirm(
-      "Warning: If you proceed, all existing groups for this class will be permanently lost and overwritten. Do you want to continue?"
+      "Varning: Om du fortsätter kommer alla befintliga grupper för denna klass att permanent tas bort och ersättas. Vill du fortsätta?"
     );
     if (!confirmed) return;
 
@@ -306,7 +306,7 @@ export default function GroupRandomizer() {
     <div className="groups-container">
       <div className="class-selector">
         <div className="current-class">
-          <strong>Current Class:</strong> {currentClass || "None"}
+          <strong>Aktuell klass:</strong> {currentClass || "Ingen"}
         </div>
         <div className="class-dropdown">
           <select
@@ -319,7 +319,7 @@ export default function GroupRandomizer() {
             }}
           >
             <option value="" disabled>
-              Select a class...
+              Välj en klass...
             </option>
             {availableClasses.map((cls) => (
               <option key={cls.id} value={cls.name}>
@@ -331,10 +331,10 @@ export default function GroupRandomizer() {
       </div>
 
       {loading ? (
-        <p className="status-message loading">Loading...</p>
+        <p className="status-message loading">Laddar...</p>
       ) : draftStudents.length === 0 ? (
         <div className="placeholder">
-          <p>No students or groups found for the current class.</p>
+          <p>Inga elever eller grupper hittades för den aktuella klassen.</p>
         </div>
       ) : (
         <>
@@ -406,16 +406,16 @@ export default function GroupRandomizer() {
             {unassigned.length > 0 && (
               <div
                 className={`group-card unassigned ${
-                  dragOverGroup === "Unassigned Students" ? "drag-over" : ""
+                  dragOverGroup === "Ej tilldelade elever" ? "drag-over" : ""
                 }`}
                 onDragOver={handleDragOver}
-                onDragEnter={() => handleDragEnter("Unassigned Students")}
+                onDragEnter={() => handleDragEnter("Ej tilldelade elever")}
                 onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, "Unassigned Students")}
+                onDrop={(e) => handleDrop(e, "Ej tilldelade elever")}
               >
                 <input
                   className="group-name-input"
-                  value="Unassigned Students"
+                  value="Ej tilldelade elever"
                   readOnly
                 />
                 <div className="students-grid">
@@ -446,7 +446,7 @@ export default function GroupRandomizer() {
           </div>
 
           <div className="randomize-sidebar">
-            <h2>Group Randomizer Settings</h2>
+            <h2>Inställningar för grupprandomisering</h2>
             <div className="method-selector">
               <label>
                 <input
@@ -456,7 +456,7 @@ export default function GroupRandomizer() {
                   checked={method === "count"}
                   onChange={() => setMethod("count")}
                 />
-                Fixed Group Count
+                Fast antal grupper
               </label>
               <label>
                 <input
@@ -466,7 +466,7 @@ export default function GroupRandomizer() {
                   checked={method === "size"}
                   onChange={() => setMethod("size")}
                 />
-                Students per Group
+                Elever per grupp
               </label>
             </div>
             <div className="input-group">
@@ -475,7 +475,7 @@ export default function GroupRandomizer() {
                   className="input"
                   type="number"
                   min="1"
-                  placeholder="Number of groups"
+                  placeholder="Antal grupper"
                   value={groupCount}
                   onChange={(e) => setGroupCount(e.target.value)}
                 />
@@ -484,30 +484,34 @@ export default function GroupRandomizer() {
                   className="input"
                   type="number"
                   min="1"
-                  placeholder="Group size"
+                  placeholder="Gruppstorlek"
                   value={groupSize}
                   onChange={(e) => setGroupSize(e.target.value)}
                 />
               )}
             </div>
             <button className="button" onClick={handleGenerate}>
-              Generate Groups
+              Generera grupper
             </button>
             <button
               className="button contrast"
               onClick={handleSave}
               disabled={saveStatus === "saving"}
             >
-              Save Changes
+              Spara ändringar
             </button>
             {saveStatus === "saving" && (
-              <p className="save-message saving">Saving...</p>
+              <p className="save-message saving">Sparar...</p>
             )}
             {saveStatus === "success" && (
-              <p className="save-message success">Groups saved successfully!</p>
+              <p className="save-message success">
+                Grupperna sparades framgångsrikt!
+              </p>
             )}
             {saveStatus === "error" && (
-              <p className="save-message error">Failed to save groups.</p>
+              <p className="save-message error">
+                Det gick inte att spara grupperna.
+              </p>
             )}
           </div>
         </>

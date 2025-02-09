@@ -35,14 +35,14 @@ export default function ClassesPage() {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p>Laddar...</p>;
   }
 
   return (
     <div className="management-container">
       <div className="management-header">
-        <h1>Classes Management</h1>
-        <p>Select a class to manage its groups or view details.</p>
+        <h1>Klasshantering</h1>
+        <p>Välj en klass för att hantera dess grupper eller visa detaljer.</p>
       </div>
       <div className="classes-list">
         {classes.map((cls) => {
@@ -51,17 +51,19 @@ export default function ClassesPage() {
             <div key={cls.id} className="class-card">
               <div className="class-summary">
                 <h2>{cls.name}</h2>
-                <p>Students: {classStudents.length}</p>
+                <p>Elever: {classStudents.length}</p>
               </div>
               {cls.school && (
                 <div className="extra">
-                  <p className="school">School: {cls.school}</p>
+                  <p className="school">Skola: {cls.school}</p>
                 </div>
               )}
               <Link
                 href={`/pages/randomizer?class=${encodeURIComponent(cls.name)}`}
               >
-                <button className="button">Manage groups for this class</button>
+                <button className="button">
+                  Hantera grupper för denna klass
+                </button>
               </Link>
             </div>
           );

@@ -18,7 +18,11 @@ export default function ManageTeachers() {
       const response = await fetch("/api/admin/teachers");
       if (!response.ok) throw new Error("Failed to fetch teachers");
       const data = await response.json();
-      setTeachers(data);
+      const filteredTeachers = data.filter(
+        (teacher) => teacher.name !== "admin"
+      );
+
+      setTeachers(filteredTeachers);
       setLoading(false);
     } catch (err) {
       setError(err.message);
@@ -37,7 +41,7 @@ export default function ManageTeachers() {
 
       if (!response.ok) throw new Error("Failed to delete teacher");
 
-      // Optimistic update
+      // Optimistic update: remove the teacher from state
       setTeachers((prev) => prev.filter((teacher) => teacher.id !== teacherId));
     } catch (err) {
       setError(err.message);
