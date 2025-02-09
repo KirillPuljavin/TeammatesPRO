@@ -192,10 +192,8 @@ export default function GroupRandomizer() {
   }
 
   async function handleSave() {
-    // Immediately show the "Saving..." label.
     setSaveStatus("saving");
 
-    // Prevent the user from closing/reloading the page while saving.
     const handleBeforeUnload = (e) => {
       e.preventDefault();
       e.returnValue = "";
