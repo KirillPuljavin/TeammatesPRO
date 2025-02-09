@@ -486,6 +486,41 @@ p {
 // ====================
 // Groups Randomizer Specific
 // ====================
+.class-selector {
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  box-shadow: 0 4px 12px var(--shadow-hover);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .current-class {
+    font-size: 1.2rem;
+    color: var(--primary);
+  }
+
+  .class-dropdown {
+    select {
+      padding: 8px 12px;
+      font-size: 1rem;
+      border: 1px solid var(--neutral-border);
+      border-radius: 4px;
+      outline: none;
+      background: #fff;
+      cursor: pointer;
+      transition: border 0.2s ease;
+
+      &:focus {
+        border-color: var(--primary);
+      }
+    }
+  }
+}
+
 .groups-container {
   @extend .management-container;
   width: 90%;
@@ -615,7 +650,7 @@ p {
   max-width: 1200px;
   background: #fff;
   box-shadow: 0 4px 12px var(--shadow-hover);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 16px;
   margin-top: 32px;
   display: flex;

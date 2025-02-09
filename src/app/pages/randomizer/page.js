@@ -2,11 +2,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function GroupRandomizer() {
   const searchParams = useSearchParams();
   const currentClass = searchParams.get("class");
+  const router = useRouter();
+
+  // State for available classes (for the drop-down)
+  const [availableClasses, setAvailableClasses] = useState([]);
 
   const [students, setStudents] = useState([]);
   const [draftGroups, setDraftGroups] = useState([]);
@@ -22,6 +26,22 @@ export default function GroupRandomizer() {
   const [draggingStudentId, setDraggingStudentId] = useState(null);
   const [dragOverGroup, setDragOverGroup] = useState(null);
 
+  // Fetch available classes for the drop-down
+  useEffect(() => {
+    async function fetchClasses() {
+      try {
+        const res = await fetch("/api/admin/classes");
+        if (!res.ok) throw new Error("Failed to fetch classes");
+        const data = await res.json();
+        setAvailableClasses(data);
+      } catch (error) {
+        console.error("Error fetching available classes:", error);
+      }
+    }
+    fetchClasses();
+  }, []);
+
+  // Fetch groups and students for the current class
   useEffect(() => {
     async function fetchData() {
       try {
@@ -243,15 +263,45 @@ export default function GroupRandomizer() {
     } catch {
       setSaveStatus("error");
     } finally {
-      // Remove the beforeunload listener when saving is complete.
       window.removeEventListener("beforeunload", handleBeforeUnload);
     }
   }
 
+  // JSX HTML
   return (
     <div className="groups-container">
+      <div className="class-selector">
+        <div className="current-class">
+          <strong>Current Class:</strong> {currentClass || "None"}
+        </div>
+        <div className="class-dropdown">
+          <select
+            value={currentClass || ""}
+            onChange={(e) => {
+              const newClass = e.target.value;
+              router.push(
+                `/pages/randomizer?class=${encodeURIComponent(newClass)}`
+              );
+            }}
+          >
+            <option value="" disabled>
+              Select a class...
+            </option>
+            {availableClasses.map((cls) => (
+              <option key={cls.id} value={cls.name}>
+                {cls.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {loading ? (
         <p className="status-message loading">Loading...</p>
+      ) : draftStudents.length === 0 ? (
+        <div className="placeholder">
+          <p>No students or groups found for the current class.</p>
+        </div>
       ) : (
         <>
           <div className="groups-grid">
@@ -356,7 +406,6 @@ export default function GroupRandomizer() {
 
           <div className="randomize-sidebar">
             <h2>Group Randomizer Settings</h2>
-
             <div className="method-selector">
               <label>
                 <input
@@ -379,7 +428,6 @@ export default function GroupRandomizer() {
                 Students per Group
               </label>
             </div>
-
             <div className="input-group">
               {method === "count" ? (
                 <input
@@ -401,7 +449,6 @@ export default function GroupRandomizer() {
                 />
               )}
             </div>
-
             <button className="button" onClick={handleGenerate}>
               Generate Groups
             </button>
@@ -412,7 +459,6 @@ export default function GroupRandomizer() {
             >
               Save Changes
             </button>
-
             {saveStatus === "saving" && (
               <p className="save-message saving">Saving...</p>
             )}
