@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 export default function AdminControlPanel() {
   const [totalClasses, setTotalClasses] = useState(0);
   const [totalTeachers, setTotalTeachers] = useState(0);
+  const [totalStudents, setTotalStudents] = useState(0);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,21 +15,29 @@ export default function AdminControlPanel() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Fetch Classes and Teachers statistics
-        const [classesResponse, teachersResponse] = await Promise.all([
-          fetch("/api/admin/classes"),
-          fetch("/api/admin/teachers"),
-        ]);
+        // Fetch statistics for classes, teachers, and students concurrently
+        const [classesResponse, teachersResponse, studentsResponse] =
+          await Promise.all([
+            fetch("/api/admin/classes"),
+            fetch("/api/admin/teachers"),
+            fetch("/api/students"),
+          ]);
 
-        if (!classesResponse.ok || !teachersResponse.ok) {
+        if (
+          !classesResponse.ok ||
+          !teachersResponse.ok ||
+          !studentsResponse.ok
+        ) {
           throw new Error("Failed to fetch statistics");
         }
 
         const classesData = await classesResponse.json();
         const teachersData = await teachersResponse.json();
+        const studentsData = await studentsResponse.json();
 
         setTotalClasses(classesData.length);
         setTotalTeachers(teachersData.length);
+        setTotalStudents(studentsData.length);
       } catch (error) {
         console.error("Error fetching statistics:", error);
       } finally {
@@ -86,6 +95,10 @@ export default function AdminControlPanel() {
             <h2>{loading ? "--" : totalTeachers}</h2>
             <p>Teachers</p>
           </div>
+          <div className="stat">
+            <h2>{loading ? "--" : totalStudents}</h2>
+            <p>Students</p>
+          </div>
         </div>
 
         <div className="links-section">
@@ -104,6 +117,14 @@ export default function AdminControlPanel() {
             }
           >
             Manage Teachers
+          </button>
+          <button
+            className="button contrast"
+            onClick={() =>
+              (window.location.href = "/pages/admin/manageStudents")
+            }
+          >
+            Manage Students
           </button>
         </div>
 
