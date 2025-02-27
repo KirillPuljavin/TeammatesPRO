@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 
 export default function ManageStudents() {
@@ -10,8 +9,9 @@ export default function ManageStudents() {
   const [classes, setClasses] = useState([]);
   const [editingStudentId, setEditingStudentId] = useState(null);
   const [editingStudentName, setEditingStudentName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Fetch available classes from the API endpoint
+  // Fetch available classes
   useEffect(() => {
     async function fetchClasses() {
       try {
@@ -50,19 +50,16 @@ export default function ManageStudents() {
   // Add a new student
   const handleAddStudent = async (e) => {
     e.preventDefault();
-
     if (!name || !classId) {
       setError("Both name and class are required.");
       return;
     }
-
     try {
       const res = await fetch("/api/students", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, class: classId }),
       });
-
       if (res.ok) {
         const newStudent = await res.json();
         setStudents((prev) => [...prev, newStudent]);
@@ -135,12 +132,29 @@ export default function ManageStudents() {
     }
   };
 
+  // Filter students based on search term
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="control-panel flex-center">
       <div className="panel-container">
         <h1>Manage Students</h1>
-        <p>Add a new student to the database.</p>
+        <p>Manage, search, and update students in the database.</p>
 
+        {/* Search Bar */}
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search students..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input search-input"
+          />
+        </div>
+
+        {/* Add Student Form */}
         <form onSubmit={handleAddStudent} className="management-form">
           <input
             type="text"
@@ -161,17 +175,18 @@ export default function ManageStudents() {
               </option>
             ))}
           </select>
-          <button type="submit" className="button">
+          <button type="submit" className="button small">
             Add Student
           </button>
         </form>
         {error && <p className="error">{error}</p>}
 
-        {students.length > 0 && (
+        {/* Students List */}
+        {filteredStudents.length > 0 ? (
           <ul className="data-list">
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
               <li key={student.id} className="data-item">
-                <div className="item-content">
+                <div className="student-info">
                   {editingStudentId === student.id ? (
                     <input
                       type="text"
@@ -180,9 +195,10 @@ export default function ManageStudents() {
                       className="input form-input"
                     />
                   ) : (
-                    <p>
-                      {student.name} - {student.class}
-                    </p>
+                    <>
+                      <span className="student-name">{student.name}</span>
+                      <span className="student-class">{student.class}</span>
+                    </>
                   )}
                 </div>
                 <div className="item-actions">
@@ -190,11 +206,14 @@ export default function ManageStudents() {
                     <>
                       <button
                         onClick={() => handleUpdateStudent(student.id)}
-                        className="button"
+                        className="button small"
                       >
                         Save
                       </button>
-                      <button onClick={handleCancelEdit} className="button">
+                      <button
+                        onClick={handleCancelEdit}
+                        className="button small"
+                      >
                         Cancel
                       </button>
                     </>
@@ -202,13 +221,13 @@ export default function ManageStudents() {
                     <>
                       <button
                         onClick={() => handleEditStudent(student)}
-                        className="button"
+                        className="button small"
                       >
-                        Edit Name
+                        Edit
                       </button>
                       <button
                         onClick={() => handleDeleteStudent(student.id)}
-                        className="button"
+                        className="button small danger"
                       >
                         Delete
                       </button>
@@ -218,6 +237,8 @@ export default function ManageStudents() {
               </li>
             ))}
           </ul>
+        ) : (
+          <p className="no-results">No students found.</p>
         )}
       </div>
     </div>

@@ -58,7 +58,7 @@ export default function LoginPage() {
   };
   const onLogin = async () => {
     router.push("/pages/classes");
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     window.location.reload();
     a;
   };

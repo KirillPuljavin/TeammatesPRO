@@ -28,14 +28,11 @@ export default function ManageClasses() {
 
   const handleDelete = async (classId) => {
     if (!window.confirm("Are you sure you want to delete this class?")) return;
-
     try {
       const response = await fetch(`/api/admin/classes?id=${classId}`, {
         method: "DELETE",
       });
-
       if (!response.ok) throw new Error("Failed to delete class");
-
       setClasses((prev) => prev.filter((cls) => cls.id !== classId));
     } catch (err) {
       setError(err.message);
@@ -45,16 +42,13 @@ export default function ManageClasses() {
   const handleAddClass = async (e) => {
     e.preventDefault();
     if (!newClassName.trim()) return;
-
     try {
       const response = await fetch("/api/admin/classes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newClassName, school: selectedSchool }),
       });
-
       if (!response.ok) throw new Error("Failed to add class");
-
       const newClass = await response.json();
       setClasses((prev) => [...prev, newClass]);
       setNewClassName("");
@@ -80,17 +74,16 @@ export default function ManageClasses() {
           <ul className="data-list">
             {classes.map((cls) => (
               <li key={cls.id} className="data-item">
-                <div className="item-content">
-                  {cls.name} | {cls.school}
+                <div className="class-info">
+                  <span className="class-name">{cls.name}</span>
+                  <span className="class-school">{cls.school}</span>
                 </div>
-                <div className="item-actions">
-                  <button
-                    className="button compact danger"
-                    onClick={() => handleDelete(cls.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
+                <button
+                  className="button compact danger"
+                  onClick={() => handleDelete(cls.id)}
+                >
+                  Delete
+                </button>
               </li>
             ))}
           </ul>
